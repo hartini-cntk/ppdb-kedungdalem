@@ -58,8 +58,13 @@
     <nav class="navbar bg-danger py-3">
         <div class="container">
 
-            <a class="navbar-brand text-white fw-bold" href="/">
-                SDN Kedung Dalam 1
+            <a class="navbar-brand text-white fw-bold d-flex align-items-center" href="/">
+              <img src="/images/logo-sekolah.png"
+                   alt="Logo SDN Kedung Dalam 1"
+                   style="width: 45px; height: 45px; object-fit: contain;"
+                   class="me-2">
+
+                  SDN Kedung Dalam 1
             </a>
 
             <a href="/akses-ppdb" class="btn btn-light px-4">
