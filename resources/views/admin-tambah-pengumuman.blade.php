@@ -110,7 +110,7 @@
 <body>
 
     <div class="navbar">
-        Admin PPDB - SDN Kedung Dalem 1
+        Admin PPDB - SDN Kedung Dalam 1
     </div>
 
     <div class="container">

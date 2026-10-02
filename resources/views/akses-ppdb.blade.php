@@ -6,7 +6,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <title>Akses PPDB - SDN Kedung Dalem 1</title>
+    <title>Akses PPDB - SDN Kedung Dalam 1</title>
 </head>
 
 <body class="bg-light">
@@ -15,7 +15,7 @@
     <nav class="navbar bg-danger">
         <div class="container">
             <a href="/" class="navbar-brand text-white fw-bold">
-                SDN Kedung Dalem 1
+                SDN Kedung Dalam 1
             </a>
 
             <a href="/" class="btn btn-light">
@@ -47,7 +47,7 @@
 
                             <p class="text-secondary">
                                 Silakan pilih untuk melanjutkan proses pendaftaran
-                                di SDN Kedung Dalem 1.
+                                di SDN Kedung Dalam 1.
                             </p>
                         </div>
 

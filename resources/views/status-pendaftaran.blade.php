@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Status Pendaftaran - PPDB SDN Kedung Dalem 1</title>
+    <title>Status Pendaftaran - PPDB SDN Kedung Dalam 1</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -19,7 +19,7 @@
         <div class="container">
 
             <a class="navbar-brand fw-bold text-danger" href="/dashboard">
-                PPDB SDN Kedung Dalem 1
+                PPDB SDN Kedung Dalam 1
             </a>
 
             <a href="/dashboard" class="btn btn-outline-danger btn-sm">

@@ -6,7 +6,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <title>PPDB SDN Kedung Dalem 1</title>
+    <title>PPDB SDN Kedung Dalam 1</title>
 
     <style>
         body {
@@ -59,7 +59,7 @@
         <div class="container">
 
             <a class="navbar-brand text-white fw-bold" href="/">
-                SDN Kedung Dalem 1
+                SDN Kedung Dalam 1
             </a>
 
             <a href="/akses-ppdb" class="btn btn-light px-4">
@@ -83,11 +83,11 @@
                     </p>
 
                     <h1 class="fw-bold display-5 mb-3">
-                        PPDB SDN Kedung Dalem 1
+                        PPDB SDN Kedung Dalam 1
                     </h1>
 
                     <p class="text-secondary fs-5 mb-4">
-                        Selamat datang di website PPDB SDN Kedung Dalem 1.
+                        Selamat datang di website PPDB SDN Kedung Dalam 1.
                         Dapatkan informasi pendaftaran dan lakukan proses
                         pendaftaran secara online.
                     </p>
@@ -110,7 +110,7 @@
                             </p>
 
                             <h4 class="fw-bold mb-3">
-                                SDN Kedung Dalem 1
+                                SDN Kedung Dalam 1
                             </h4>
 
                             <p class="text-secondary mb-4">
@@ -270,11 +270,11 @@
                     </p>
 
                     <h3 class="fw-bold">
-                        SDN Kedung Dalem 1
+                        SDN Kedung Dalam 1
                     </h3>
 
                     <p class="text-secondary mb-2">
-                        JL. KH. Musa Kp. Margasari Desa Kedung Dalem
+                        JL. KH. Musa Kp. Margasari Desa Kedung Dalam
                         RT.07 RW.02
                     </p>
 
@@ -314,7 +314,7 @@
         <div class="container text-center">
 
             <p class="mb-0 text-secondary">
-                © 2026 SDN Kedung Dalem 1
+                © 2026 SDN Kedung Dalam 1
             </p>
 
         </div>

@@ -118,7 +118,7 @@
 
         <!-- Kop -->
         <div class="kop">
-            <h2>SDN KEDUNG DALEM 1</h2>
+            <h2>SDN KEDUNG DALAM 1</h2>
             <h4>PENERIMAAN PESERTA DIDIK BARU</h4>
             <p>Tahun Pelajaran 2026/2027</p>
         </div>
@@ -188,14 +188,14 @@
         <div class="keterangan">
             <strong>Keterangan:</strong><br>
             Bukti ini menunjukkan bahwa calon peserta didik telah melakukan
-            pendaftaran PPDB melalui website PPDB SDN Kedung Dalem 1.
+            pendaftaran PPDB melalui website PPDB SDN Kedung Dalam 1.
             Simpan bukti ini sebagai dokumen pendaftaran.
         </div>
 
         <!-- Tanda tangan -->
         <div class="tanda-tangan">
             <p>
-                Kedung Dalem,
+                Kedung Dalam,
                 {{ $pendaftaran->created_at->format('d-m-Y') }}
             </p>
 

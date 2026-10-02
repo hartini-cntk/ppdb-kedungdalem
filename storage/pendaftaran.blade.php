@@ -15,7 +15,7 @@
 
     <div class="text-center mb-4">
         <h1 class="fw-bold">Formulir Pendaftaran</h1>
-        <p>PPDB SDN Kedung Dalem 1</p>
+        <p>PPDB SDN Kedung Dalam 1</p>
     </div>
 
     <form method="POST" action="/pendaftaran">

@@ -6,7 +6,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <title>Detail Pendaftar - PPDB SDN Kedung Dalem 1</title>
+    <title>Detail Pendaftar - PPDB SDN Kedung Dalam 1</title>
 </head>
 
 <body class="bg-light">
@@ -15,7 +15,7 @@
     <nav class="navbar bg-danger">
         <div class="container">
             <a href="/admin/dashboard" class="navbar-brand text-white fw-bold">
-                SDN Kedung Dalem 1
+                SDN Kedung Dalam 1
             </a>
 
             <a href="/admin/pendaftar" class="btn btn-light">
