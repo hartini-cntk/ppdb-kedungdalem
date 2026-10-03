@@ -17,14 +17,49 @@ Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::get('/dashboard', function () {
+
     $pendaftaran = \App\Models\Pendaftaran::where(
         'user_id',
         auth()->id()
     )->first();
 
-    return view('dashboard', compact('pendaftaran'));
-})->middleware('auth');
+    // Cek apakah siswa sudah mengisi formulir
+    $sudahIsiFormulir = $pendaftaran !== null;
 
+    // Cek berkas siswa
+    $berkas = collect();
+
+    if ($pendaftaran) {
+        $berkas = \App\Models\Berkas::where(
+            'id_pendaftaran',
+            $pendaftaran->id
+        )->get();
+    }
+
+    // Cek apakah sudah upload berkas
+    $sudahUploadBerkas = $berkas->count() > 0;
+
+    // Cek apakah semua berkas sudah diterima admin
+    $berkasSudahDiverifikasi =
+        $sudahUploadBerkas &&
+        $berkas->every(function ($item) {
+            return $item->status === 'Diterima';
+        });
+
+    // Cek verifikasi pendaftaran
+    $sudahTerverifikasi =
+        $pendaftaran &&
+        $pendaftaran->status === 'Terverifikasi';
+
+    return view('dashboard', compact(
+        'pendaftaran',
+        'sudahIsiFormulir',
+        'sudahUploadBerkas',
+        'berkasSudahDiverifikasi',
+        'sudahTerverifikasi'
+    ));
+
+})->middleware('auth');
 Route::get('/admin/dashboard', function () {
 
     $totalPendaftar = \App\Models\Pendaftaran::count();

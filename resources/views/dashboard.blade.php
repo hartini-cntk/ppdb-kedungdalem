@@ -102,43 +102,58 @@
 
 .progress-card {
     background: #ffffff;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 18px;
+    padding: 28px 24px;
+    border: 1px solid #f1f1f1;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.05);
 }
 
 .progress-step {
     text-align: center;
+    position: relative;
 }
 
 .step-number {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: #f1f3f5;
-    color: #6c757d;
+    color: #adb5bd;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 10px;
     font-weight: 700;
+    font-size: 15px;
+    border: 2px solid #e9ecef;
+    transition: all 0.2s ease;
 }
 
 .step-active {
     background: #dc3545;
     color: #ffffff;
+    border-color: #dc3545;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.20);
 }
 
 .step-title {
     font-size: 14px;
     font-weight: 600;
+    color: #6c757d;
+    white-space: nowrap;
 }
 
 .step-line {
-    height: 2px;
+    height: 3px;
     background: #e9ecef;
     width: 100%;
     margin-top: 21px;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.step-line-active {
+    background: #dc3545;
 }
     
 </style>
@@ -254,159 +269,215 @@
         </div>
 
 
-        <!-- Proses Pendaftaran -->
-        <div class="progress-card mb-4">
+  <!-- Proses Pendaftaran -->
+<div class="progress-card mb-4">
 
-            <p class="status-label mb-1">
-                TAHAPAN PPDB
-            </p>
+    <p class="status-label mb-1">
+        TAHAPAN PPDB
+    </p>
 
-            <h4 class="fw-bold mb-4">
-                Proses Pendaftaran
-            </h4>
+    <h4 class="fw-bold mb-4">
+        Proses Pendaftaran
+    </h4>
 
-            <div class="row align-items-start">
+    <div class="row align-items-start">
 
-                <div class="col">
-                    <div class="progress-step">
-                        <div class="step-number step-active">
-                            1
-                        </div>
-                        <div class="step-title">
-                            Registrasi
-                        </div>
-                    </div>
+        <!-- 1. Registrasi -->
+        <div class="col">
+            <div class="progress-step">
+
+                <div class="step-number step-active">
+                    ✓
                 </div>
 
-                <div class="col">
-                    <div class="step-line"></div>
-                </div>
-
-                <div class="col">
-                    <div class="progress-step">
-                        <div class="step-number">
-                            2
-                        </div>
-                        <div class="step-title">
-                            Formulir
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="step-line"></div>
-                </div>
-
-                <div class="col">
-                    <div class="progress-step">
-                        <div class="step-number">
-                            3
-                        </div>
-                        <div class="step-title">
-                            Berkas
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="step-line"></div>
-                </div>
-
-                <div class="col">
-                    <div class="progress-step">
-                        <div class="step-number">
-                            4
-                        </div>
-                        <div class="step-title">
-                            Verifikasi
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="step-line"></div>
-                </div>
-
-                <div class="col">
-                    <div class="progress-step">
-                        <div class="step-number">
-                            5
-                        </div>
-                        <div class="step-title">
-                            Pengumuman
-                        </div>
-                    </div>
+                <div class="step-title">
+                    Registrasi
                 </div>
 
             </div>
-
         </div>
+
+
+        <div class="col">
+    <div class="step-line {{ $sudahIsiFormulir ? 'step-line-active' : '' }}"></div>
+</div>
+
+
+        <!-- 2. Formulir -->
+        <div class="col">
+            <div class="progress-step">
+
+                <div class="step-number
+                    {{ $sudahIsiFormulir ? 'step-active' : '' }}">
+                    {{ $sudahIsiFormulir ? '✓' : '2' }}
+                </div>
+
+                <div class="step-title">
+                    Formulir
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col">
+    <div class="step-line {{ $sudahUploadBerkas ? 'step-line-active' : '' }}"></div>
+</div>
+
+
+        <!-- 3. Berkas -->
+        <div class="col">
+            <div class="progress-step">
+
+                <div class="step-number
+                    {{ $sudahUploadBerkas ? 'step-active' : '' }}">
+                    {{ $sudahUploadBerkas ? '✓' : '3' }}
+                </div>
+
+                <div class="step-title">
+                    Berkas
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col">
+    <div class="step-line {{ $sudahTerverifikasi ? 'step-line-active' : '' }}"></div>
+</div>
+
+
+        <!-- 4. Verifikasi -->
+        <div class="col">
+            <div class="progress-step">
+
+                <div class="step-number
+                    {{ $sudahTerverifikasi ? 'step-active' : '' }}">
+                    {{ $sudahTerverifikasi ? '✓' : '4' }}
+                </div>
+
+                <div class="step-title">
+                    Verifikasi
+                </div>
+
+            </div>
+        </div>
+
+
+       <div class="col">
+    <div class="step-line"></div>
+</div>
+
+
+        <!-- 5. Pengumuman -->
+        <div class="col">
+            <div class="progress-step">
+
+                <div class="step-number">
+                    5
+                </div>
+
+                <div class="step-title">
+                    Pengumuman
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
 
         <!-- Menu -->
         <div class="row g-4">
 
 
             <!-- Formulir -->
-            <div class="col-md-6">
+<div class="col-md-6">
 
-                <div class="card menu-card">
+    <div class="card menu-card">
 
-                    <div class="card-body p-4">
+        <div class="card-body p-4">
 
+            <h4 class="menu-title mb-2">
+                Formulir Pendaftaran
+            </h4>
 
-                        <h4 class="menu-title mb-2">
-                            Formulir Pendaftaran
-                        </h4>
+            @if ($sudahIsiFormulir)
 
-                        <p class="menu-description">
-                            Isi data calon siswa dan data orang tua/wali
-                            untuk melanjutkan proses pendaftaran.
-                        </p>
+                <p class="menu-description">
+                    Data formulir pendaftaran kamu sudah diisi.
+                </p>
 
-                        <a
-                          href="/pendaftaran"
-                          class="btn btn-menu"
-                         >
-                          Isi Formulir
-                        </a>
+                <span class="badge bg-success px-3 py-2">
+                    Status: Selesai
+                </span>
 
-                    </div>
+            @else
 
-                </div>
+                <p class="menu-description">
+                    Isi data calon siswa dan data orang tua/wali
+                    untuk melanjutkan proses pendaftaran.
+                </p>
 
-            </div>
+                <a
+                    href="/pendaftaran"
+                    class="btn btn-menu"
+                >
+                    Isi Formulir
+                </a>
 
+            @endif
+
+        </div>
+
+    </div>
+
+</div>
 
             <!-- Berkas -->
-            <div class="col-md-6">
+<div class="col-md-6">
 
-                <div class="card menu-card">
+    <div class="card menu-card">
 
-                    <div class="card-body p-4">
+        <div class="card-body p-4">
 
-                        
-                        <h4 class="menu-title mb-2">
-                            Upload Berkas
-                        </h4>
+            <h4 class="menu-title mb-2">
+                Upload Berkas
+            </h4>
 
-                        <p class="menu-description">
-                            Upload dokumen persyaratan setelah mengisi
-                            formulir pendaftaran.
-                        </p>
+            @if ($sudahUploadBerkas)
 
-                        <a
-                            href="/upload-berkas"
-                            class="btn btn-outline-danger btn-menu"
-                        >
-                            Upload Berkas
-                        </a>
+                <p class="menu-description">
+                    Berkas persyaratan kamu sudah berhasil diunggah.
+                </p>
 
-                    </div>
+                <span class="badge bg-success px-3 py-2">
+                    Status: Selesai
+                </span>
 
-                </div>
+            @else
 
-            </div>
+                <p class="menu-description">
+                    Upload dokumen persyaratan setelah mengisi
+                    formulir pendaftaran.
+                </p>
 
+                <a
+                    href="/upload-berkas"
+                    class="btn btn-menu"
+                >
+                    Upload Berkas
+                </a>
+
+            @endif
+
+        </div>
+
+    </div>
+
+</div>
 
             <!-- Status -->
             <div class="col-md-6">
