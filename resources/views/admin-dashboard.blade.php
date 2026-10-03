@@ -141,9 +141,9 @@
                             Periksa berkas persyaratan yang telah diupload oleh siswa.
                         </p>
 
-                        <button class="btn btn-outline-danger" disabled>
+                        <a href="/admin/berkas" class="btn btn-outline-danger">
                             Verifikasi Berkas
-                        </button>
+                        </a>
 
                     </div>
                 </div>

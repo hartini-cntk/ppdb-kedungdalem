@@ -51,12 +51,17 @@ Route::get('/dashboard', function () {
         $pendaftaran &&
         $pendaftaran->status === 'Terverifikasi';
 
+        // Cek apakah sudah ada pengumuman
+           $adaPengumuman = \App\Models\Pengumuman::count() > 0;
+
     return view('dashboard', compact(
         'pendaftaran',
         'sudahIsiFormulir',
         'sudahUploadBerkas',
         'berkasSudahDiverifikasi',
-        'sudahTerverifikasi'
+        'sudahTerverifikasi',
+        'adaPengumuman',
+
     ));
 
 })->middleware('auth');
@@ -93,6 +98,17 @@ Route::get('/admin/pendaftar', function () {
     $pendaftarans = \App\Models\Pendaftaran::latest()->get();
 
     return view('admin-pendaftar', compact('pendaftarans'));
+
+})->middleware('auth');
+
+// Verifikasi Berkas Admin
+Route::get('/admin/berkas', function () {
+
+    $berkas = \App\Models\Berkas::with('pendaftaran')
+        ->latest()
+        ->get();
+
+    return view('admin-berkas', compact('berkas'));
 
 })->middleware('auth');
 

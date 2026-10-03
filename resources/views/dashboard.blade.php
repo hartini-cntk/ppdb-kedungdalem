@@ -29,25 +29,28 @@
     }
 
     .welcome-title {
-        font-weight: 700;
-    }
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+}
 
     /* Logo Dashboard */
     .dashboard-brand {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-    }
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
-    .dashboard-logo {
-        width: 75px;
-        height: 75px;
-        object-fit: contain;
-        background: #ffffff;
-        border-radius: 14px;
-        padding: 7px;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
-    }
+.dashboard-logo {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+}
 
     .status-card {
         border: none;
@@ -94,11 +97,12 @@
     }
 
     .status-label {
-        color: #dc3545;
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-    }
+    color: #dc3545;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
 
 .progress-card {
     background: #ffffff;
@@ -248,19 +252,31 @@
                     </div>
 
 
-                    @if ($pendaftaran)
+                    @if (!$pendaftaran)
 
-                        <span class="badge text-bg-warning px-3 py-2">
-                            {{ $pendaftaran->status }}
-                        </span>
+    <span class="badge text-bg-secondary px-3 py-2">
+        Belum Mengisi Formulir
+    </span>
 
-                    @else
+@elseif ($pendaftaran->status === 'Terverifikasi')
 
-                        <span class="badge text-bg-secondary px-3 py-2">
-                            Belum Mengisi Formulir
-                        </span>
+    <span class="badge text-bg-success px-3 py-2">
+        Terverifikasi
+    </span>
 
-                    @endif
+@elseif ($pendaftaran->status === 'Ditolak')
+
+    <span class="badge text-bg-danger px-3 py-2">
+        Ditolak
+    </span>
+
+@else
+
+    <span class="badge text-bg-warning px-3 py-2">
+        Menunggu Verifikasi
+    </span>
+
+@endif
 
                 </div>
 
@@ -370,22 +386,19 @@
 
 
         <!-- 5. Pengumuman -->
-        <div class="col">
-            <div class="progress-step">
+<div class="col">
+    <div class="progress-step">
 
-                <div class="step-number">
-                    5
-                </div>
+        <div class="step-number
+            {{ $adaPengumuman ? 'step-active' : '' }}">
+            {{ $adaPengumuman ? '✓' : '5' }}
+        </div>
 
-                <div class="step-title">
-                    Pengumuman
-                </div>
-
-            </div>
+        <div class="step-title">
+            Pengumuman
         </div>
 
     </div>
-
 </div>
 
 

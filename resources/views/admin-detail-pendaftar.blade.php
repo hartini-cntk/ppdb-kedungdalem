@@ -197,37 +197,53 @@
 
                 <div class="d-flex gap-2 flex-wrap">
 
-                    <a
-                        href="{{ asset('storage/' . $berkas->nama_file) }}"
-                        target="_blank"
-                        class="btn btn-sm btn-outline-danger"
-                    >
-                        Lihat Berkas
-                    </a>
+    <a
+        href="{{ asset('storage/' . $berkas->nama_file) }}"
+        target="_blank"
+        class="btn btn-sm btn-outline-danger"
+    >
+        Lihat Berkas
+    </a>
 
-                    <form
-                        method="POST"
-                        action="/admin/berkas/{{ $berkas->id_berkas }}/terima"
-                    >
-                        @csrf
+    @if ($berkas->status === 'Diterima')
 
-                        <button type="submit" class="btn btn-sm btn-success">
-                            Terima
-                        </button>
-                    </form>
+        <span class="badge bg-success d-flex align-items-center px-3">
+            Diterima
+        </span>
 
-                    <form
-                        method="POST"
-                        action="/admin/berkas/{{ $berkas->id_berkas }}/tolak"
-                    >
-                        @csrf
+    @elseif ($berkas->status === 'Ditolak')
 
-                        <button type="submit" class="btn btn-sm btn-danger">
-                            Tolak
-                        </button>
-                    </form>
+        <span class="badge bg-danger d-flex align-items-center px-3">
+            Ditolak
+        </span>
 
-                </div>
+    @else
+
+        <form
+            method="POST"
+            action="/admin/berkas/{{ $berkas->id_berkas }}/terima"
+        >
+            @csrf
+
+            <button type="submit" class="btn btn-sm btn-success">
+                Terima
+            </button>
+        </form>
+
+        <form
+            method="POST"
+            action="/admin/berkas/{{ $berkas->id_berkas }}/tolak"
+        >
+            @csrf
+
+            <button type="submit" class="btn btn-sm btn-danger">
+                Tolak
+            </button>
+        </form>
+
+    @endif
+
+</div>
 
             </div>
 
@@ -243,24 +259,65 @@
 </div>
 
         <!-- Status -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-4">
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
 
-                <h4 class="fw-bold mb-3">Status Pendaftaran</h4>
+        <h4 class="fw-bold mb-3">
+            Status Pendaftaran
+        </h4>
 
-                <span class="badge text-bg-warning px-3 py-2">
-                    {{ $pendaftaran->status }}
-                </span>
+        @if ($pendaftaran->status === 'Terverifikasi')
 
-                <form method="POST" action="/admin/pendaftar/{{ $pendaftaran->id }}/verifikasi" class="mt-3">
-                 @csrf
-                <button type="submit" class="btn btn-success">
-                 Verifikasi Pendaftaran
-                </button>
+            <span class="badge text-bg-success px-3 py-2">
+                Terverifikasi
+            </span>
+
+            <p class="text-secondary mt-3 mb-0">
+                Pendaftaran siswa ini sudah diverifikasi.
+            </p>
+
+        @else
+
+            <span class="badge text-bg-warning px-3 py-2">
+                {{ $pendaftaran->status }}
+            </span>
+
+            @if ($pendaftaran->berkas->count() > 0 && $pendaftaran->berkas->every(function ($berkas) {
+                return $berkas->status === 'Diterima';
+            }))
+
+                <form
+                    method="POST"
+                    action="/admin/pendaftar/{{ $pendaftaran->id }}/verifikasi"
+                    class="mt-3"
+                >
+                    @csrf
+
+                    <button type="submit" class="btn btn-success">
+                        Verifikasi Pendaftaran
+                    </button>
                 </form>
 
-            </div>
-        </div>
+            @else
+
+                <button
+                    type="button"
+                    class="btn btn-secondary mt-3"
+                    disabled
+                >
+                    Verifikasi Pendaftaran
+                </button>
+
+                <p class="text-secondary mt-2 mb-0">
+                    Verifikasi pendaftaran dapat dilakukan setelah semua berkas diterima.
+                </p>
+
+            @endif
+
+        @endif
+
+    </div>
+</div>
 
     </div>
 

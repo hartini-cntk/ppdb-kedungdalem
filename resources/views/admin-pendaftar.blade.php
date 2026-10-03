@@ -66,10 +66,30 @@
                             <td>{{ $pendaftaran->created_at->format('d M Y, H:i') }}</td>
 
                             <td>
-                                <span class="badge text-bg-warning">
-                                    {{ $pendaftaran->status }}
-                                </span>
-                            </td>
+
+
+    @if ($pendaftaran->status === 'Terverifikasi')
+
+        <span class="badge text-bg-success">
+            Terverifikasi
+        </span>
+
+    @elseif ($pendaftaran->status === 'Ditolak')
+
+        <span class="badge text-bg-danger">
+            Ditolak
+        </span>
+
+    @else
+
+        <span class="badge text-bg-warning">
+            {{ $pendaftaran->status }}
+        </span>
+
+    @endif
+
+</td>
+
 
                             <td>
                                  <a href="/admin/pendaftar/{{ $pendaftaran->id }}"
