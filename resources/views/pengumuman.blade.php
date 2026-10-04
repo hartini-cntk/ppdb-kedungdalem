@@ -34,6 +34,32 @@
             </p>
         </div>
 
+        @if ($pendaftaran && $pendaftaran->status === 'Lulus')
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+
+            <h4 class="fw-bold text-success mb-2">
+                🎉 Selamat!
+            </h4>
+
+            <p class="mb-3">
+                Berdasarkan hasil seleksi PPDB SDN Kedung Dalem 1,
+                kamu dinyatakan <strong class="text-success">LULUS</strong>.
+            </p>
+
+            <a
+                href="/bukti-pendaftaran"
+                class="btn btn-danger"
+            >
+                Lihat Bukti Pendaftaran
+            </a>
+
+        </div>
+    </div>
+
+@endif
+
         @forelse ($pengumumans as $pengumuman)
 
             <div class="card border-0 shadow-sm mb-4">

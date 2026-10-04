@@ -237,46 +237,71 @@
 
             <div class="card-body p-4">
 
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="card-body p-4">
 
-                    <div>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-                        <h5 class="fw-bold mb-1">
-                            Status Pendaftaran
-                        </h5>
+        <div>
 
-                        <p class="text-secondary mb-0">
-                            Pantau proses pendaftaran dan verifikasi kamu.
-                        </p>
+            <h5 class="fw-bold mb-1">
+                Status Pendaftaran
+            </h5>
 
-                    </div>
+            <p class="text-secondary mb-0">
+                Pantau proses pendaftaran dan verifikasi kamu.
+            </p>
 
+        </div>
 
-                    @if (!$pendaftaran)
+        @if (!$pendaftaran)
 
-    <span class="badge text-bg-secondary px-3 py-2">
-        Belum Mengisi Formulir
-    </span>
+            <span class="badge text-bg-secondary px-3 py-2">
+                Belum Mengisi Formulir
+            </span>
 
-@elseif ($pendaftaran->status === 'Terverifikasi')
+        @elseif ($pendaftaran->status === 'Terverifikasi')
 
-    <span class="badge text-bg-success px-3 py-2">
-        Terverifikasi
-    </span>
+            <span class="badge text-bg-success px-3 py-2">
+                Terverifikasi
+            </span>
 
-@elseif ($pendaftaran->status === 'Ditolak')
+        @elseif ($pendaftaran->status === 'Lulus')
 
-    <span class="badge text-bg-danger px-3 py-2">
-        Ditolak
-    </span>
+            <span class="badge text-bg-success px-3 py-2">
+                Lulus
+            </span>
 
-@else
+        @elseif ($pendaftaran->status === 'Tidak Lulus')
 
-    <span class="badge text-bg-warning px-3 py-2">
-        Menunggu Verifikasi
-    </span>
+            <span class="badge text-bg-danger px-3 py-2">
+                Tidak Lulus
+            </span>
 
-@endif
+        @elseif ($pendaftaran->status === 'Ditolak')
+
+            <span class="badge text-bg-danger px-3 py-2">
+                Ditolak
+            </span>
+
+        @else
+
+            <span class="badge text-bg-warning px-3 py-2">
+                Menunggu Verifikasi
+            </span>
+
+        @endif
+
+    </div>
+
+    @if ($pendaftaran && $pendaftaran->status === 'Lulus')
+
+        <div class="mt-3 pt-3 border-top">
+            <p class="text-success fw-semibold mb-0">
+                🎉 Selamat! Kamu dinyatakan Lulus dalam PPDB SDN Kedung Dalem 1.
+            </p>
+        </div>
+
+    @endif
 
                 </div>
 
@@ -368,10 +393,11 @@
             <div class="progress-step">
 
                 <div class="step-number
-                    {{ $sudahTerverifikasi ? 'step-active' : '' }}">
-                    {{ $sudahTerverifikasi ? '✓' : '4' }}
-                </div>
+    {{ ($pendaftaran && in_array($pendaftaran->status, ['Terverifikasi', 'Lulus'])) ? 'step-active' : '' }}">
+    
+    {{ ($pendaftaran && in_array($pendaftaran->status, ['Terverifikasi', 'Lulus'])) ? '✓' : '4' }}
 
+               </div>
                 <div class="step-title">
                     Verifikasi
                 </div>
@@ -381,7 +407,7 @@
 
 
        <div class="col">
-    <div class="step-line"></div>
+    <div class="step-line {{ ($pendaftaran && in_array($pendaftaran->status, ['Terverifikasi', 'Lulus'])) ? 'step-line-active' : '' }}"></div>
 </div>
 
 
@@ -492,35 +518,37 @@
 
 </div>
 
-            <!-- Status -->
-            <div class="col-md-6">
 
-                <div class="card menu-card">
+<!-- Status -->
+<div class="col-md-6">
 
-                    <div class="card-body p-4">
+    <div class="card menu-card">
 
+        <div class="card-body p-4">
 
-                        <h4 class="menu-title mb-2">
-                            Cek Status
-                        </h4>
+            <h4 class="menu-title mb-2">
+                Cek Status
+            </h4>
 
-                        <p class="menu-description">
-                            Lihat status pendaftaran dan hasil verifikasi
-                            berkas kamu.
-                        </p>
+            <p class="menu-description">
+                Lihat status pendaftaran dan hasil verifikasi
+                berkas kamu.
+            </p>
 
-                        <a
-                            href="/status-pendaftaran"
-                            class="btn btn-outline-danger btn-menu"
-                        >
-                            Cek Status
-                        </a>
+            <a
+                href="/status-pendaftaran"
+                class="btn btn-outline-danger btn-menu"
+            >
+                Cek Status
+            </a>
 
-                    </div>
+           
 
-                </div>
+        </div>
 
-            </div>
+    </div>
+
+</div>
 
 
             <!-- Pengumuman -->

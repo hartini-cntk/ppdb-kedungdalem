@@ -147,9 +147,19 @@ Route::post('/upload-berkas', [BerkasController::class, 'store'])->middleware('a
 
 // Pengumuman Siswa
 Route::get('/pengumuman', function () {
+
     $pengumumans = \App\Models\Pengumuman::latest()->get();
 
-    return view('pengumuman', compact('pengumumans'));
+    $pendaftaran = \App\Models\Pendaftaran::where(
+        'user_id',
+        Auth::id()
+    )->latest()->first();
+
+    return view('pengumuman', compact(
+        'pengumumans',
+        'pendaftaran'
+    ));
+
 })->middleware('auth');
 
 // Status Pendaftaran Siswa
@@ -186,6 +196,40 @@ Route::post('/admin/pendaftar/{id}/verifikasi', function ($id) {
     return back()->with(
         'success',
         'Pendaftaran berhasil diverifikasi.'
+    );
+
+})->middleware('auth');
+
+
+// Hasil Seleksi: Lulus
+Route::post('/admin/pendaftar/{id}/lulus', function ($id) {
+
+    $pendaftaran = \App\Models\Pendaftaran::findOrFail($id);
+
+    $pendaftaran->update([
+        'status' => 'Lulus',
+    ]);
+
+    return back()->with(
+        'success',
+        'Pendaftar dinyatakan Lulus.'
+    );
+
+})->middleware('auth');
+
+
+// Hasil Seleksi: Tidak Lulus
+Route::post('/admin/pendaftar/{id}/tidak-lulus', function ($id) {
+
+    $pendaftaran = \App\Models\Pendaftaran::findOrFail($id);
+
+    $pendaftaran->update([
+        'status' => 'Tidak Lulus',
+    ]);
+
+    return back()->with(
+        'success',
+        'Pendaftar dinyatakan Tidak Lulus.'
     );
 
 })->middleware('auth');

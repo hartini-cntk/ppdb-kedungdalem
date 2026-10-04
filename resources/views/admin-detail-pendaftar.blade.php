@@ -266,15 +266,67 @@
             Status Pendaftaran
         </h4>
 
-        @if ($pendaftaran->status === 'Terverifikasi')
+        @if ($pendaftaran->status === 'Lulus')
+
+            <span class="badge text-bg-success px-3 py-2">
+                Lulus
+            </span>
+
+            <p class="text-secondary mt-3 mb-0">
+                Siswa ini dinyatakan lulus dalam proses PPDB.
+            </p>
+
+        @elseif ($pendaftaran->status === 'Tidak Lulus')
+
+            <span class="badge text-bg-danger px-3 py-2">
+                Tidak Lulus
+            </span>
+
+            <p class="text-secondary mt-3 mb-0">
+                Siswa ini dinyatakan tidak lulus dalam proses PPDB.
+            </p>
+
+        @elseif ($pendaftaran->status === 'Terverifikasi')
 
             <span class="badge text-bg-success px-3 py-2">
                 Terverifikasi
             </span>
 
-            <p class="text-secondary mt-3 mb-0">
-                Pendaftaran siswa ini sudah diverifikasi.
+            <p class="text-secondary mt-3">
+                Data dan seluruh berkas siswa sudah diverifikasi.
             </p>
+
+            <hr>
+
+            <p class="fw-semibold mb-2">
+                Tentukan Hasil Seleksi
+            </p>
+
+            <div class="d-flex gap-2">
+
+                <form
+                    method="POST"
+                    action="/admin/pendaftar/{{ $pendaftaran->id }}/lulus"
+                >
+                    @csrf
+
+                    <button type="submit" class="btn btn-success">
+                        Lulus
+                    </button>
+                </form>
+
+                <form
+                    method="POST"
+                    action="/admin/pendaftar/{{ $pendaftaran->id }}/tidak-lulus"
+                >
+                    @csrf
+
+                    <button type="submit" class="btn btn-danger">
+                        Tidak Lulus
+                    </button>
+                </form>
+
+            </div>
 
         @else
 
@@ -282,9 +334,12 @@
                 {{ $pendaftaran->status }}
             </span>
 
-            @if ($pendaftaran->berkas->count() > 0 && $pendaftaran->berkas->every(function ($berkas) {
-                return $berkas->status === 'Diterima';
-            }))
+            @if (
+                $pendaftaran->berkas->count() > 0 &&
+                $pendaftaran->berkas->every(function ($berkas) {
+                    return $berkas->status === 'Diterima';
+                })
+            )
 
                 <form
                     method="POST"
@@ -316,9 +371,8 @@
 
         @endif
 
-    </div>
-</div>
-
+            </div>
+         </div>
     </div>
 
 </body>
