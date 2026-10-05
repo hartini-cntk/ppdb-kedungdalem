@@ -44,8 +44,15 @@
         }
 
         .hero-description {
-            max-width: 650px;
+            max-width: 700px;
             line-height: 1.7;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         .hero-card {
@@ -143,6 +150,34 @@
             margin-bottom: 4px;
         }
 
+        /* Informasi sekolah - tambahan */
+.school-detail-divider {
+    border-top: 1px solid #eeeeee;
+    margin-top: 22px;
+    padding-top: 18px;
+}
+
+.school-hours {
+    min-height: 170px;
+}
+
+.accreditation-box {
+    border-top: 1px solid #eeeeee;
+    margin-top: 24px;
+    padding-top: 18px;
+    text-align: center;
+}
+
+.accreditation-box .contact-title {
+    margin-bottom: 5px;
+}
+
+.accreditation-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #212529;
+}
+
         /* Footer */
         footer {
             border-top: 1px solid #eeeeee;
@@ -180,92 +215,36 @@
     </nav>
 
 
-    <!-- Hero -->
-    <section class="hero py-5">
+   <!-- KIRI: FOKUS UTAMA PPDB -->
+<div class="col-12 hero-content text-center">
 
-        <div class="container">
+    <p class="section-label mb-3">
+        PENERIMAAN PESERTA DIDIK BARU
+    </p>
 
-            <div class="row align-items-center py-5">
+    <h1 class="fw-bold hero-title mb-3">
+        SDN Kedung Dalam 1
+    </h1>
 
-                <!-- KIRI: FOKUS UTAMA PPDB -->
-                <div class="col-lg-7">
+    <div class="d-inline-block bg-danger text-white px-3 py-2 rounded-pill mb-4 fw-semibold">
+        Tahun Pelajaran 2027/2028
+    </div>
 
-                    <p class="section-label mb-3">
-                        PENERIMAAN PESERTA DIDIK BARU
-                    </p>
+    <p class="text-secondary fs-5 hero-description mb-4">
+        Selamat datang di website PPDB SDN Kedung Dalam 1.
+        Dapatkan informasi pendaftaran dan lakukan proses
+        pendaftaran secara online dengan mudah.
+    </p>
 
-                    <h1 class="fw-bold hero-title mb-3">
-                        PPDB SDN<br>
-                        Kedung Dalam 1
-                    </h1>
+    <a href="/akses-ppdb"
+       class="btn btn-danger px-4 py-3 btn-main">
+        Mulai Pendaftaran
+    </a>
 
-                    <div class="d-inline-block bg-danger text-white px-3 py-2 rounded-pill mb-4 fw-semibold">
-                        Tahun Pelajaran 2027/2028
-                    </div>
-
-                    <p class="text-secondary fs-5 hero-description mb-4">
-                        Selamat datang di website PPDB SDN Kedung Dalam 1.
-                        Dapatkan informasi pendaftaran dan lakukan proses
-                        pendaftaran secara online dengan mudah.
-                    </p>
-
-                    <a href="/akses-ppdb"
-                       class="btn btn-danger px-4 py-3 btn-main">
-                        Mulai Pendaftaran
-                    </a>
-
-                </div>
+</div>
 
 
-                <!-- KANAN: INFORMASI SEKOLAH -->
-                <div class="col-lg-5 mt-5 mt-lg-0">
-
-                    <div class="card hero-card shadow-sm">
-
-                        <div class="card-body p-4 text-center">
-
-                            
-                            <h4 class="fw-bold mb-2">
-                                SDN Kedung Dalam 1
-                            </h4>
-
-                            <p class="text-secondary mb-4">
-                                Sekolah Dasar Negeri yang mendukung
-                                perkembangan peserta didik melalui
-                                lingkungan belajar yang nyaman dan positif.
-                            </p>
-
-                            <div class="row g-3">
-
-                                <div class="col-6">
-
-                                    <div class="school-stat">
-
-                                        <small class="text-secondary">
-                                            Akreditasi
-                                        </small>
-
-                                        <h5 class="fw-bold mb-0">
-                                            B
-                                        </h5>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-6">
-
-                                    <div class="school-stat">
-
-                                        <small class="text-secondary">
-                                            Tahun Pelajaran
-                                        </small>
-
-                                        <h5 class="fw-bold mb-0">
-                                            2027/2028
-                                        </h5>
-
-                                    </div>
+                
 
                                 </div>
 
@@ -315,10 +294,7 @@
 
                         <div class="card-body p-4">
 
-                            <div class="info-icon mb-4">
-                                📅
-                            </div>
-
+                            
                             <h5 class="fw-bold mb-2">
                                 Jadwal Pendaftaran
                             </h5>
@@ -343,9 +319,7 @@
 
                         <div class="card-body p-4">
 
-                            <div class="info-icon mb-4">
-                                📄
-                            </div>
+                            
 
                             <h5 class="fw-bold mb-2">
                                 Persyaratan
@@ -370,9 +344,7 @@
 
                         <div class="card-body p-4">
 
-                            <div class="info-icon mb-4">
-                                📝
-                            </div>
+                            
 
                             <h5 class="fw-bold mb-2">
                                 Alur Pendaftaran
@@ -398,117 +370,126 @@
 
 
     <!-- Informasi Sekolah -->
-    <section class="school-info py-5">
+    <div class="text-center mb-5">
 
-        <div class="container">
+    <p class="section-label mb-1">
+        INFORMASI SEKOLAH
+    </p>
 
-            <div class="text-center mb-5">
+    <h2 class="fw-bold">
+        SDN Kedung Dalam 1
+    </h2>
 
-                <p class="section-label mb-1">
-                    INFORMASI SEKOLAH
-                </p>
+    <p class="text-secondary mt-3 mb-0 mx-auto" style="max-width: 700px;">
+        Sekolah Dasar Negeri yang mendukung perkembangan peserta didik
+        melalui lingkungan belajar yang nyaman dan positif.
+    </p>
 
-                <h2 class="fw-bold">
-                    SDN Kedung Dalam 1
-                </h2>
+</div>
+
+
+           <div class="row g-4 align-items-stretch">
+
+
+<!-- Alamat -->
+<div class="col-lg-5">
+
+    <div class="school-box">
+
+        <p class="section-label mb-2">
+            ALAMAT SEKOLAH
+        </p>
+
+        <h5 class="fw-bold mb-3">
+            Lokasi Sekolah
+        </h5>
+
+        <p class="text-secondary mb-0">
+            JL. KH. Musa Kp. Margasari Desa Kedung Dalam
+            RT.07 RW.02
+            <br>
+            Kec. Mauk - Kab. Tangerang - Banten 15530
+        </p>
+
+        <!-- Email Sekolah -->
+<div class="school-detail-divider">
+
+    <div class="contact-title">
+        Email Sekolah
+    </div>
+
+    <p class="fw-semibold mb-0">
+         sdnkedungdalamsatu@gmail.com
+    </p>
+
+</div>
+    </div>
+
+</div>
+
+
+                <!-- Kontak & Jam -->
+<div class="col-lg-7">
+
+    <div class="school-box school-hours">
+
+        <div class="row g-4">
+
+            <!-- Jam Kegiatan -->
+            <div class="col-md-6">
+
+                <div class="contact-item">
+
+                    <div class="contact-title">
+                        Jam Kegiatan Sekolah
+                    </div>
+
+                    <h5 class="fw-bold mb-1">
+                        07.00 - 12.00 WIB
+                    </h5>
+
+                    <small class="text-secondary">
+                        Jam kegiatan belajar di sekolah.
+                    </small>
+
+                </div>
 
             </div>
 
 
-            <div class="row g-4">
+            <!-- Jam Operasional -->
+            <div class="col-md-6">
 
-                <!-- Alamat -->
-                <div class="col-lg-5">
+                <div class="contact-item">
 
-                    <div class="school-box">
-
-                        <p class="section-label mb-2">
-                            ALAMAT SEKOLAH
-                        </p>
-
-                        <h5 class="fw-bold mb-3">
-                            📍 Lokasi Sekolah
-                        </h5>
-
-                        <p class="text-secondary mb-0">
-                            JL. KH. Musa Kp. Margasari Desa Kedung Dalam
-                            RT.07 RW.02
-                            <br>
-                            Kec. Mauk - Kab. Tangerang - Banten 15530
-                        </p>
-
+                    <div class="contact-title">
+                        Jam Operasional
                     </div>
+
+                    <h5 class="fw-bold mb-1">
+                        07.00 - 15.00 WIB
+                    </h5>
+
+                    <small class="text-secondary">
+                        Menyesuaikan kebutuhan pelayanan sekolah.
+                    </small>
 
                 </div>
 
-
-                <!-- Kontak & Jam -->
-                <div class="col-lg-7">
-
-                    <div class="school-box">
-
-                        <div class="row g-4">
-
-                            <div class="col-md-6">
-
-                                <div class="contact-item">
-
-                                    <div class="contact-title">
-                                        Jam Kegiatan Sekolah
-                                    </div>
-
-                                    <h5 class="fw-bold mb-1">
-                                        07.00 - 12.00 WIB
-                                    </h5>
-
-                                    <small class="text-secondary">
-                                        Jam kegiatan belajar di sekolah.
-                                    </small>
-
-                                </div>
-
-                            </div>
+            </div>
 
 
-                            <div class="col-md-6">
+            <!-- Akreditasi -->
+            <div class="col-12">
 
-                                <div class="contact-item">
+                <div class="accreditation-box">
 
-                                    <div class="contact-title">
-                                        Jam Operasional
-                                    </div>
+                    <div class="contact-title">
+                        Akreditasi
+                    </div>
 
-                                    <h5 class="fw-bold mb-1">
-                                        07.00 - 15.00 WIB
-                                    </h5>
-
-                                    <small class="text-secondary">
-                                        Menyesuaikan kebutuhan pelayanan sekolah.
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-12">
-
-                                <div class="contact-item">
-
-                                    <div class="contact-title">
-                                        Email Sekolah
-                                    </div>
-
-                                    <p class="fw-semibold mb-0">
-                                        ✉️ sdnkedungdalamsatu@gmail.com
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
+                    <div class="accreditation-value">
+                        B
                     </div>
 
                 </div>
@@ -516,6 +497,12 @@
             </div>
 
         </div>
+
+    </div>
+
+</div>
+
+</div>
 
     </section>
 

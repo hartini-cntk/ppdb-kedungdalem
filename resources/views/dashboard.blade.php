@@ -384,7 +384,11 @@
 
 
         <div class="col">
-    <div class="step-line {{ $sudahTerverifikasi ? 'step-line-active' : '' }}"></div>
+    <div class="step-line
+        {{ ($pendaftaran && in_array($pendaftaran->status, ['Terverifikasi', 'Lulus']))
+            ? 'step-line-active'
+            : '' }}">
+    </div>
 </div>
 
 

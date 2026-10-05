@@ -129,7 +129,7 @@
                         </p>
 
                         <h1 class="login-title h3 mb-2">
-                            Login Siswa
+                            Login 
                         </h1>
 
                         <p class="text-secondary mb-0">
