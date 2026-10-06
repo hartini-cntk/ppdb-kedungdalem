@@ -84,11 +84,17 @@ Route::get('/admin/dashboard', function () {
     'Ditolak'
       )->count();
 
+     $lulus = \App\Models\Pendaftaran::where(
+    'status',
+    'Lulus'
+      )->count();
+
     return view('admin-dashboard', compact(
     'totalPendaftar',
     'menungguVerifikasi',
     'terverifikasi',
-    'ditolak'
+    'ditolak',
+    'lulus'
      ));
 
     })->middleware('auth');
