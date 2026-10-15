@@ -9,6 +9,7 @@
     <title>Formulir Pendaftaran - PPDB SDN Kedung Dalam 1</title>
 </head>
 
+
 <body class="bg-light">
 
     <!-- Navbar -->
@@ -27,6 +28,17 @@
 
     <!-- Isi Formulir -->
     <div class="container py-5">
+        @if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if ($pendaftaranDitutup)
+    <div class="alert alert-danger">
+        Pendaftaran PPDB sudah ditutup karena kuota telah terpenuhi.
+    </div>
+@endif
 
         <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -46,7 +58,7 @@
                     </p>
                 </div>
 
-
+            @if (!$pendaftaranDitutup)
                 <form method="POST" action="/pendaftaran">
 
                     @csrf
@@ -598,6 +610,11 @@
                     </div>
 
                 </form>
+                @else
+    <div class="alert alert-warning">
+        Formulir pendaftaran tidak dapat diisi karena kuota telah terpenuhi.
+    </div>
+@endif
 
             </div>
         </div>

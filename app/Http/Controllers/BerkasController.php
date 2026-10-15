@@ -8,10 +8,23 @@ use App\Models\Pendaftaran;
 
 class BerkasController extends Controller
 {
+
     public function create()
-    {
-        return view('upload-berkas');
+   {
+    $pendaftaran = Pendaftaran::where(
+        'user_id',
+        auth()->id()
+    )->first();
+
+    if (!$pendaftaran) {
+        return redirect('/pendaftaran')->with(
+            'error',
+            'Silakan isi formulir pendaftaran terlebih dahulu sebelum upload berkas.'
+        );
     }
+
+    return view('upload-berkas');
+}
 
     public function store(Request $request)
     {

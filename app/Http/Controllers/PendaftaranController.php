@@ -4,16 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
+use App\Models\PengaturanPpdb;
 
 class PendaftaranController extends Controller
 {
-    public function create()
-    {
-        return view('pendaftaran');
+   
+public function create()
+{
+    $pendaftaranSiswa = Pendaftaran::where(
+        'user_id',
+        auth()->id()
+    )->first();
+
+    if ($pendaftaranSiswa) {
+        return redirect('/dashboard')->with(
+            'error',
+            'Kamu sudah mengisi formulir pendaftaran.'
+        );
     }
+
+    $pengaturan = PengaturanPpdb::first();
+
+    if (!$pengaturan) {
+        $pengaturan = PengaturanPpdb::create([
+            'kuota' => 100,
+        ]);
+    }
+
+    $totalPendaftar = Pendaftaran::count();
+
+    $pendaftaranDitutup =
+        $totalPendaftar >= $pengaturan->kuota;
+
+    return view(
+        'pendaftaran',
+        compact('pendaftaranDitutup')
+    );
+}
+
 
     public function store(Request $request)
     {
+
+    $pendaftaranSiswa = Pendaftaran::where(
+    'user_id',
+    auth()->id()
+)->first();
+
+if ($pendaftaranSiswa) {
+    return redirect('/dashboard')->with(
+        'error',
+        'Kamu sudah mengisi formulir pendaftaran.'
+    );
+}
+
+$pengaturan = PengaturanPpdb::first();
+
+if (!$pengaturan) {
+    $pengaturan = PengaturanPpdb::create([
+        'kuota' => 100,
+    ]);
+}
+
+$totalPendaftar = Pendaftaran::count();
+
+if ($totalPendaftar >= $pengaturan->kuota) {
+    return redirect('/pendaftaran')->with(
+        'error',
+        'Mohon maaf, pendaftaran PPDB sudah ditutup karena kuota telah terpenuhi.'
+    );
+}
+
         $request->validate([
             // Data calon siswa
             'nama_lengkap' => 'required',

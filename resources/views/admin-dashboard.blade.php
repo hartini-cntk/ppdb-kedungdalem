@@ -78,6 +78,45 @@
     padding: 40px;
 }
 
+/* Pengaturan Kuota PPDB */
+.admin-card {
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.admin-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #172033;
+    margin-bottom: 10px;
+}
+
+.admin-card p {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.admin-card label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.admin-card button {
+    background: #dc3545;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    cursor: pointer;
+}
+
+.admin-card button:hover {
+    background: #bb2d3b;
+}
+
 /* Statistik Dashboard */
 .stat-card {
     border: 1px solid #eeeeee !important;
@@ -294,93 +333,57 @@
 
 </div>
 
-        <!-- Menu Admin -->
-        <div class="row g-4">
 
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
+{{-- Pengaturan Kuota PPDB --}}
+<div class="admin-card" style="margin-top: 24px; padding: 24px;">
+    <h3>Pengaturan Kuota PPDB</h3>
 
-                        <h4 class="fw-bold">
-                            Data Pendaftar
-                        </h4>
+    <p>
+        Atur jumlah maksimal peserta yang dapat mendaftar.
+    </p>
 
-                        <p class="text-secondary">
-                            Lihat dan kelola data calon siswa yang telah melakukan pendaftaran.
-                        </p>
+    @if (session('success'))
+        <p style="color: green;">
+            {{ session('success') }}
+        </p>
+    @endif
 
-                        <a href="/admin/pendaftar" class="btn btn-danger">
-                            Kelola Data
-                        </a>  
+    @if ($errors->any())
+        <p style="color: red;">
+            {{ $errors->first('kuota') }}
+        </p>
+    @endif
 
-                        
-                    </div>
-                </div>
-            </div>
+    <form action="{{ url('/admin/pengaturan-kuota') }}" method="POST">
+        @csrf
 
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
+        <label for="kuota">Kuota Maksimal Pendaftar</label>
 
-                        <h4 class="fw-bold">
-                            Verifikasi Berkas
-                        </h4>
+        <input
+            type="number"
+            id="kuota"
+            name="kuota"
+            min="1"
+            value="{{ old('kuota', $kuota) }}"
+            required
+            style="display: block; width: 100%; max-width: 300px; padding: 10px; margin: 10px 0 16px;"
+        >
 
-                        <p class="text-secondary">
-                            Periksa berkas persyaratan yang telah diupload oleh siswa.
-                        </p>
+        <p>
+            Total pendaftar: <strong>{{ $totalPendaftar }}</strong>
+        </p>
 
-                        <a href="/admin/berkas" class="btn btn-outline-danger">
-                            Verifikasi Berkas
-                        </a>
+        <p>
+            Sisa kuota: <strong>{{ $sisaKuota }}</strong>
+        </p>
+        <button type="submit">
+            Simpan Kuota
+        </button>
+    </form>
+</div>
+    
 
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
-
-                        <h4 class="fw-bold">
-                            Status Pendaftaran
-                        </h4>
-
-                        <p class="text-secondary">
-                            Ubah status pendaftaran sesuai hasil verifikasi.
-                        </p>
-
-                        <button class="btn btn-outline-danger" disabled>
-                            Kelola Status
-                        </button>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
-
-                        <h4 class="fw-bold">
-                            Pengumuman
-                        </h4>
-
-                        <p class="text-secondary">
-                            Kelola informasi dan pengumuman hasil PPDB.
-                        </p>
-
-                        <a href="/admin/pengumuman/tambah" class="btn btn-danger">
-                          Kelola Pengumuman
-                        </a>
-
-                    </div>
-                </div>
-            </div>
-
-                </div>
-
-    </main>
+</main>
 
 </div>
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\BerkasController;
+use App\Http\Controllers\PengaturanPpdbController;
 
 Route::get('/', function () {
     return view('home');
@@ -51,8 +52,12 @@ Route::get('/dashboard', function () {
         $pendaftaran &&
         $pendaftaran->status === 'Terverifikasi';
 
-        // Cek apakah sudah ada pengumuman
-           $adaPengumuman = \App\Models\Pengumuman::count() > 0;
+        // Cek apakah pengumuman sudah tersedia untuk siswa yang lulus
+    $adaPengumuman =
+    $pendaftaran &&
+    $pendaftaran->status === 'Lulus' &&
+    \App\Models\Pengumuman::count() > 0;
+
 
     return view('dashboard', compact(
         'pendaftaran',
@@ -68,6 +73,17 @@ Route::get('/dashboard', function () {
 Route::get('/admin/dashboard', function () {
 
     $totalPendaftar = \App\Models\Pendaftaran::count();
+
+    $pengaturan = \App\Models\PengaturanPpdb::first();
+
+if (!$pengaturan) {
+    $pengaturan = \App\Models\PengaturanPpdb::create([
+        'kuota' => 100,
+    ]);
+}
+
+$kuota = $pengaturan->kuota;
+$sisaKuota = max(0, $kuota - $totalPendaftar);
 
     $menungguVerifikasi = \App\Models\Pendaftaran::where(
     'status',
@@ -94,7 +110,9 @@ Route::get('/admin/dashboard', function () {
     'menungguVerifikasi',
     'terverifikasi',
     'ditolak',
-    'lulus'
+    'lulus',
+    'kuota',
+    'sisaKuota'
      ));
 
     })->middleware('auth');
@@ -106,6 +124,7 @@ Route::get('/admin/pendaftar', function () {
     return view('admin-pendaftar', compact('pendaftarans'));
 
 })->middleware('auth');
+
 
 // Verifikasi Berkas Admin
 Route::get('/admin/berkas', function () {
@@ -256,3 +275,8 @@ Route::post('/logout', function () {
 
     return redirect('/login');
 });
+
+Route::post('/admin/pengaturan-kuota', [
+    PengaturanPpdbController::class,
+    'update'
+])->middleware('auth');

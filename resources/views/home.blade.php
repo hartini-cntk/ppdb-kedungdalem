@@ -20,13 +20,13 @@
         }
 
         .navbar-logo {
-            width: 45px;
-            height: 45px;
-            object-fit: contain;
-            background: #ffffff;
-            border-radius: 50%;
-            padding: 3px;
-        }
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    }
 
         /* Hero */
         .hero {
@@ -44,16 +44,18 @@
         }
 
         .hero-description {
-            max-width: 700px;
-            line-height: 1.7;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    max-width: 700px;
+    line-height: 1.6;
+    margin-left: 0;
+    margin-right: 0;
+}
 
-        .hero-content {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+.hero-content {
+    max-width: 100%;
+    margin: 0;
+    padding: 30px px 20px;
+}
+
 
         .hero-card {
             border: 1px solid #eeeeee;
@@ -216,7 +218,7 @@
 
 
    <!-- KIRI: FOKUS UTAMA PPDB -->
-<div class="col-12 hero-content text-center">
+<div class="col-12 col-lg-8 hero-content text-start">
 
     <p class="section-label mb-3">
         PENERIMAAN PESERTA DIDIK BARU
