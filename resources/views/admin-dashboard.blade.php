@@ -212,14 +212,6 @@
             Data Pendaftar
         </a>
 
-        <a href="/admin/berkas" class="admin-sidebar-link">
-            Verifikasi Berkas
-        </a>
-
-        <a href="/admin/pendaftar" class="admin-sidebar-link">
-            Status Pendaftaran
-        </a>
-
         <a href="/admin/pengumuman" class="admin-sidebar-link">
             Pengumuman
         </a>
