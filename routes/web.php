@@ -7,57 +7,82 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\BerkasController;
 use App\Http\Controllers\PengaturanPpdbController;
+use App\Http\Controllers\PengumumanController;
+use App\Models\Pendaftaran;
+use App\Models\Berkas;
+use App\Models\Pengumuman;
+use App\Models\PengaturanPpdb;
+
+
+// ==========================
+// BERANDA
+// ==========================
 
 Route::get('/', function () {
     return view('home');
 });
+
+
+// ==========================
+// REGISTRASI DAN LOGIN
+// ==========================
+
 Route::get('/register', [RegisterController::class, 'showRegister']);
 Route::post('/register', [RegisterController::class, 'register']);
 
-Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
+Route::get('/login', [LoginController::class, 'showLogin'])
+    ->name('login');
+
 Route::post('/login', [LoginController::class, 'login']);
+
+Route::post('/logout', function () {
+    Auth::logout();
+
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect('/login');
+});
+
+
+// ==========================
+// DASHBOARD SISWA
+// ==========================
 
 Route::get('/dashboard', function () {
 
-    $pendaftaran = \App\Models\Pendaftaran::where(
+    $pendaftaran = Pendaftaran::where(
         'user_id',
-        auth()->id()
+        Auth::id()
     )->first();
 
-    // Cek apakah siswa sudah mengisi formulir
     $sudahIsiFormulir = $pendaftaran !== null;
 
-    // Cek berkas siswa
     $berkas = collect();
 
     if ($pendaftaran) {
-        $berkas = \App\Models\Berkas::where(
+        $berkas = Berkas::where(
             'id_pendaftaran',
             $pendaftaran->id
         )->get();
     }
 
-    // Cek apakah sudah upload berkas
     $sudahUploadBerkas = $berkas->count() > 0;
 
-    // Cek apakah semua berkas sudah diterima admin
     $berkasSudahDiverifikasi =
         $sudahUploadBerkas &&
         $berkas->every(function ($item) {
             return $item->status === 'Diterima';
         });
 
-    // Cek verifikasi pendaftaran
     $sudahTerverifikasi =
         $pendaftaran &&
         $pendaftaran->status === 'Terverifikasi';
 
-        // Cek apakah pengumuman sudah tersedia untuk siswa yang lulus
     $adaPengumuman =
-    $pendaftaran &&
-    $pendaftaran->status === 'Lulus' &&
-    \App\Models\Pengumuman::count() > 0;
-
+        $pendaftaran &&
+        $pendaftaran->status === 'Lulus' &&
+        Pengumuman::count() > 0;
 
     return view('dashboard', compact(
         'pendaftaran',
@@ -65,154 +90,115 @@ Route::get('/dashboard', function () {
         'sudahUploadBerkas',
         'berkasSudahDiverifikasi',
         'sudahTerverifikasi',
-        'adaPengumuman',
-
+        'adaPengumuman'
     ));
 
 })->middleware('auth');
+
+
+// ==========================
+// DASHBOARD ADMIN
+// ==========================
+
 Route::get('/admin/dashboard', function () {
 
-    $totalPendaftar = \App\Models\Pendaftaran::count();
+    $totalPendaftar = Pendaftaran::count();
 
-    $pengaturan = \App\Models\PengaturanPpdb::first();
+    $pengaturan = PengaturanPpdb::first();
 
-if (!$pengaturan) {
-    $pengaturan = \App\Models\PengaturanPpdb::create([
-        'kuota' => 100,
-    ]);
-}
+    if (!$pengaturan) {
+        $pengaturan = PengaturanPpdb::create([
+            'kuota' => 100,
+        ]);
+    }
 
-$kuota = $pengaturan->kuota;
-$sisaKuota = max(0, $kuota - $totalPendaftar);
+    $kuota = $pengaturan->kuota;
 
-    $menungguVerifikasi = \App\Models\Pendaftaran::where(
-    'status',
-    'Menunggu Verifikasi'
-     )->count();
+    $sisaKuota = max(
+        0,
+        $kuota - $totalPendaftar
+    );
 
-     $terverifikasi = \App\Models\Pendaftaran::where(
-    'status',
-    'Terverifikasi'
-     )->count();
+    $persentaseKuota = $kuota > 0
+        ? min(
+            100,
+            round(($totalPendaftar / $kuota) * 100)
+        )
+        : 0;
 
-     $ditolak = \App\Models\Pendaftaran::where(
-    'status',
-    'Ditolak'
-      )->count();
+    $menungguVerifikasi = Pendaftaran::where(
+        'status',
+        'Menunggu Verifikasi'
+    )->count();
 
-     $lulus = \App\Models\Pendaftaran::where(
-    'status',
-    'Lulus'
-      )->count();
+    $terverifikasi = Pendaftaran::where(
+        'status',
+        'Terverifikasi'
+    )->count();
+
+    $ditolak = Pendaftaran::where(
+        'status',
+        'Ditolak'
+    )->count();
+
+    $lulus = Pendaftaran::where(
+        'status',
+        'Lulus'
+    )->count();
+
+    $pendaftarTerbaru = Pendaftaran::latest()
+        ->take(5)
+        ->get();
 
     return view('admin-dashboard', compact(
-    'totalPendaftar',
-    'menungguVerifikasi',
-    'terverifikasi',
-    'ditolak',
-    'lulus',
-    'kuota',
-    'sisaKuota'
-     ));
+        'totalPendaftar',
+        'menungguVerifikasi',
+        'terverifikasi',
+        'ditolak',
+        'lulus',
+        'kuota',
+        'sisaKuota',
+        'persentaseKuota',
+        'pendaftarTerbaru'
+    ));
 
-    })->middleware('auth');
+})->middleware('auth');
+
+
+// ==========================
+// DATA PENDAFTAR ADMIN
+// ==========================
 
 Route::get('/admin/pendaftar', function () {
 
-    $pendaftarans = \App\Models\Pendaftaran::latest()->get();
+    $pendaftarans = Pendaftaran::latest()->get();
 
-    return view('admin-pendaftar', compact('pendaftarans'));
-
-})->middleware('auth');
-
-
-// Verifikasi Berkas Admin
-Route::get('/admin/berkas', function () {
-
-    $berkas = \App\Models\Berkas::with('pendaftaran')
-        ->latest()
-        ->get();
-
-    return view('admin-berkas', compact('berkas'));
+    return view(
+        'admin-pendaftar',
+        compact('pendaftarans')
+    );
 
 })->middleware('auth');
-
-// Pengumuman Admin
-Route::get('/admin/pengumuman', [
-    \App\Http\Controllers\PengumumanController::class,
-    'index'
-])->middleware('auth');
-
-Route::get('/admin/pengumuman/tambah', [
-    \App\Http\Controllers\PengumumanController::class,
-    'create'
-])->middleware('auth');
-  
-Route::post('/admin/pengumuman', [
-    \App\Http\Controllers\PengumumanController::class,
-    'store'
-])->middleware('auth');
 
 Route::get('/admin/pendaftar/{id}', function ($id) {
 
-    $pendaftaran = \App\Models\Pendaftaran::findOrFail($id);
+    $pendaftaran = Pendaftaran::findOrFail($id);
 
-    return view('admin-detail-pendaftar', compact('pendaftaran'));
-
-})->middleware('auth');
-
-Route::get('/akses-ppdb', function () {
-    return view('akses-ppdb');
-});
-Route::get('/pendaftaran', [PendaftaranController::class, 'create'])->middleware('auth');
-Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->middleware('auth');
-
-Route::get('/upload-berkas', [BerkasController::class, 'create'])->middleware('auth');
-Route::post('/upload-berkas', [BerkasController::class, 'store'])->middleware('auth');
-
-// Pengumuman Siswa
-Route::get('/pengumuman', function () {
-
-    $pengumumans = \App\Models\Pengumuman::latest()->get();
-
-    $pendaftaran = \App\Models\Pendaftaran::where(
-        'user_id',
-        Auth::id()
-    )->latest()->first();
-
-    return view('pengumuman', compact(
-        'pengumumans',
-        'pendaftaran'
-    ));
+    return view(
+        'admin-detail-pendaftar',
+        compact('pendaftaran')
+    );
 
 })->middleware('auth');
 
-// Status Pendaftaran Siswa
 
-Route::get('/status-pendaftaran', function () {
-    $pendaftaran = \App\Models\Pendaftaran::where(
-        'user_id',
-        Auth::id()
-    )->latest()->firstOrFail();
+// ==========================
+// VERIFIKASI PENDAFTARAN
+// ==========================
 
-    return view('status-pendaftaran', compact('pendaftaran'));
-})->middleware('auth');
-
-// Cetak Bukti Pendaftaran
-Route::get('/bukti-pendaftaran', function () {
-    $pendaftaran = \App\Models\Pendaftaran::where(
-        'user_id',
-        Auth::id()
-    )->latest()->firstOrFail();
-
-    return view('bukti-pendaftaran', compact('pendaftaran'));
-})->middleware('auth');
-
-
-// Verifikasi Pendaftaran
 Route::post('/admin/pendaftar/{id}/verifikasi', function ($id) {
 
-    $pendaftaran = \App\Models\Pendaftaran::findOrFail($id);
+    $pendaftaran = Pendaftaran::findOrFail($id);
 
     $pendaftaran->update([
         'status' => 'Terverifikasi',
@@ -225,11 +211,9 @@ Route::post('/admin/pendaftar/{id}/verifikasi', function ($id) {
 
 })->middleware('auth');
 
-
-// Hasil Seleksi: Lulus
 Route::post('/admin/pendaftar/{id}/lulus', function ($id) {
 
-    $pendaftaran = \App\Models\Pendaftaran::findOrFail($id);
+    $pendaftaran = Pendaftaran::findOrFail($id);
 
     $pendaftaran->update([
         'status' => 'Lulus',
@@ -242,11 +226,9 @@ Route::post('/admin/pendaftar/{id}/lulus', function ($id) {
 
 })->middleware('auth');
 
-
-// Hasil Seleksi: Tidak Lulus
 Route::post('/admin/pendaftar/{id}/tidak-lulus', function ($id) {
 
-    $pendaftaran = \App\Models\Pendaftaran::findOrFail($id);
+    $pendaftaran = Pendaftaran::findOrFail($id);
 
     $pendaftaran->update([
         'status' => 'Tidak Lulus',
@@ -259,7 +241,24 @@ Route::post('/admin/pendaftar/{id}/tidak-lulus', function ($id) {
 
 })->middleware('auth');
 
-// Verifikasi Berkas
+
+// ==========================
+// BERKAS ADMIN
+// ==========================
+
+Route::get('/admin/berkas', function () {
+
+    $berkas = Berkas::with('pendaftaran')
+        ->latest()
+        ->get();
+
+    return view(
+        'admin-berkas',
+        compact('berkas')
+    );
+
+})->middleware('auth');
+
 Route::post('/admin/berkas/{id}/terima', [
     BerkasController::class,
     'terima'
@@ -270,13 +269,125 @@ Route::post('/admin/berkas/{id}/tolak', [
     'tolak'
 ])->middleware('auth');
 
-Route::post('/logout', function () {
-    Auth::logout();
 
-    return redirect('/login');
-});
+// ==========================
+// PENGUMUMAN ADMIN
+// ==========================
+
+Route::get('/admin/pengumuman', [
+    PengumumanController::class,
+    'index'
+])->middleware('auth');
+
+Route::get('/admin/pengumuman/tambah', [
+    PengumumanController::class,
+    'create'
+])->middleware('auth');
+
+Route::post('/admin/pengumuman', [
+    PengumumanController::class,
+    'store'
+])->middleware('auth');
+
+
+// ==========================
+// PENGATURAN KUOTA PPDB
+// ==========================
 
 Route::post('/admin/pengaturan-kuota', [
     PengaturanPpdbController::class,
     'update'
 ])->middleware('auth');
+
+
+// ==========================
+// AKSES DAN FORMULIR PPDB
+// ==========================
+
+Route::get('/akses-ppdb', function () {
+    return view('akses-ppdb');
+});
+
+Route::get('/pendaftaran', [
+    PendaftaranController::class,
+    'create'
+])->middleware('auth');
+
+Route::post('/pendaftaran', [
+    PendaftaranController::class,
+    'store'
+])->middleware('auth');
+
+
+// ==========================
+// UPLOAD BERKAS SISWA
+// ==========================
+
+Route::get('/upload-berkas', [
+    BerkasController::class,
+    'create'
+])->middleware('auth');
+
+Route::post('/upload-berkas', [
+    BerkasController::class,
+    'store'
+])->middleware('auth');
+
+
+// ==========================
+// PENGUMUMAN SISWA
+// ==========================
+
+Route::get('/pengumuman', function () {
+
+    $pengumumans = Pengumuman::latest()->get();
+
+    $pendaftaran = Pendaftaran::where(
+        'user_id',
+        Auth::id()
+    )->latest()->first();
+
+    return view('pengumuman', compact(
+        'pengumumans',
+        'pendaftaran'
+    ));
+
+})->middleware('auth');
+
+
+// ==========================
+// STATUS PENDAFTARAN SISWA
+// ==========================
+
+Route::get('/status-pendaftaran', function () {
+
+    $pendaftaran = Pendaftaran::where(
+        'user_id',
+        Auth::id()
+    )->latest()->firstOrFail();
+
+    return view(
+        'status-pendaftaran',
+        compact('pendaftaran')
+    );
+
+})->middleware('auth');
+
+
+// ==========================
+// CETAK BUKTI PENDAFTARAN
+// ==========================
+
+Route::get('/bukti-pendaftaran', function () {
+
+    $pendaftaran = Pendaftaran::where(
+        'user_id',
+        Auth::id()
+    )->latest()->firstOrFail();
+
+    return view(
+        'bukti-pendaftaran',
+        compact('pendaftaran')
+    );
+
+})->middleware('auth');

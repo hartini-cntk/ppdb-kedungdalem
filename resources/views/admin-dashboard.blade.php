@@ -3,381 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     <title>Dashboard Admin - PPDB SDN Kedung Dalam 1</title>
 
-<style>
-    .admin-header {
-        margin-bottom: 35px;
-    }
+    <style>
+        * { box-sizing: border-box; }
 
-    .admin-title {
-        font-size: 32px;
-        letter-spacing: -0.5px;
-    }
+        body {
+            margin: 0;
+            background: #f6f7f9;
+            color: #252b36;
+            font-family: Arial, sans-serif;
+        }
 
-    .admin-subtitle {
-        font-size: 15px;
-    }
+        .navbar {
+            background: #dc3545;
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
 
-.admin-navbar-logo {
-    width: 45px;
-    height: 45px;
-    object-fit: contain;
-}
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
 
-/* Layout Admin */
-.admin-layout {
-    display: flex;
-    min-height: calc(100vh - 58px);
-}
+        .logo { width: 44px; height: 44px; object-fit: contain; }
 
-.admin-sidebar {
-    width: 240px;
-    background: #ffffff;
-    border-right: 1px solid #e9ecef;
-    padding: 30px 15px;
-    flex-shrink: 0;
-}
+        .logout {
+            background: white;
+            color: #dc3545;
+            border: 0;
+            border-radius: 7px;
+            padding: 10px 16px;
+            cursor: pointer;
+        }
 
-.admin-sidebar-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: #9a9a9a;
-    letter-spacing: 1px;
-    padding: 0 15px;
-    margin-bottom: 14px;
-}
+        .layout { display: flex; min-height: calc(100vh - 68px); }
 
-.admin-sidebar-link {
-    display: block;
-    padding: 12px 15px;
-    margin-bottom: 6px;
-    border-radius: 8px;
-    color: #495057;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            padding: 30px 16px;
+        }
 
-.admin-sidebar-link:hover {
-    background: #fff0f0;
-    color: #dc3545;
-}
+        .sidebar-title {
+            color: #969ba5;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin: 0 12px 20px;
+        }
 
-.admin-sidebar-link.active {
-    background: #dc3545;
-    color: #ffffff;
-}
+        .sidebar a {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 9px;
+            border-radius: 8px;
+            color: #555d6b;
+            text-decoration: none;
+            font-size: 14px;
+        }
 
-.admin-main {
-    flex: 1;
-    padding: 40px;
-}
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #dc3545;
+            color: white;
+        }
 
-/* Pengaturan Kuota PPDB */
-.admin-card {
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-}
+        .main { flex: 1; min-width: 0; padding: 35px; }
 
-.admin-card h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #172033;
-    margin-bottom: 10px;
-}
+        .page-header { margin-bottom: 28px; }
 
-.admin-card p {
-    color: #6c757d;
-    font-size: 14px;
-}
+        .page-header h1 { margin: 0 0 8px; font-size: 29px; }
 
-.admin-card label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-}
+        .muted { color: #777f8d; font-size: 14px; line-height: 1.6; }
 
-.admin-card button {
-    background: #dc3545;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 18px;
-    cursor: pointer;
-}
+        .section-title { font-size: 19px; margin: 0 0 16px; }
 
-.admin-card button:hover {
-    background: #bb2d3b;
-}
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
 
-/* Statistik Dashboard */
-.stat-card {
-    border: 1px solid #eeeeee !important;
-    border-radius: 12px !important;
-    background: #ffffff;
-    transition: all 0.2s ease;
-}
+        .stat {
+            background: white;
+            border: 1px solid #e7e9ee;
+            border-top: 4px solid #dc3545;
+            border-radius: 12px;
+            padding: 20px 16px;
+            box-shadow: 0 2px 6px #17203308;
+        }
+        
 
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06) !important;
-}
+        .stat-label { color: #777f8d; font-size: 12px; min-height: 32px; margin: 0 0 10px; }
+        .stat-number { font-size: 28px; font-weight: bold; margin: 0; }
 
-.stat-label {
-    font-size: 13px;
-    color: #777777;
-    margin-bottom: 8px;
-}
+        .panel {
+            background: white;
+            border: 1px solid #e7e9ee;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 6px #17203308;
+        }
 
-.stat-number {
-    font-size: 28px;
-    color: #172033;
-}
+        .panel-description { color: #777f8d; font-size: 13px; line-height: 1.6; margin: 0 0 20px; }
 
-.stat-card:nth-child(4) {
-    border-top: 3px solid #198754 !important;
-}
+        .quota-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-.stat-card:nth-child(5) {
-    border-top: 3px solid #dc3545 !important;
-}
+        .quota-number { font-size: 26px; font-weight: bold; margin-top: 5px; }
+        .small-muted { color: #777f8d; font-size: 13px; }
 
-@media (max-width: 768px) {
-    .admin-layout {
-        display: block;
-    }
+        .progress-track {
+            height: 12px;
+            background: #eceef2;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 14px 0;
+        }
 
-    .admin-sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #eeeeee;
-    }
+        .progress-fill { height: 100%; background: #dc3545; border-radius: 20px; }
 
-    .admin-main {
-        padding: 25px 15px;
-    }
-}
+        .quota-foot {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: #777f8d;
+            font-size: 12px;
+        }
 
-</style>
+        .form-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+        .form-field { width: 100%; max-width: 300px; }
+        .form-label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 8px; }
 
+        .form-input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #d9dde5;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .primary-button {
+            background: #dc3545;
+            color: white;
+            border: 0;
+            border-radius: 7px;
+            padding: 12px 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary-button:hover { background: #bb2d3b; }
+
+        .alert-success, .alert-error { padding: 12px; border-radius: 7px; font-size: 13px; margin-bottom: 15px; }
+        .alert-success { background: #edf8f0; color: #24733a; }
+        .alert-error { background: #fff0f0; color: #b42332; }
+
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; background: #f8f9fb; color: #687080; padding: 13px 12px; white-space: nowrap; }
+        td { padding: 15px 12px; border-bottom: 1px solid #edf0f4; }
+        tbody tr:last-child td { border-bottom: 0; }
+
+        .status {
+            display: inline-block;
+            background: #f0f1f4;
+            color: #555d6b;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .empty { text-align: center; color: #818896; padding: 25px 10px; }
+
+        @media (max-width: 1100px) {
+            .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .main { padding: 25px; }
+        }
+
+        @media (max-width: 768px) {
+            .layout { display: block; }
+            .sidebar { width: 100%; padding: 16px; border-right: 0; border-bottom: 1px solid #e5e7eb; }
+            .sidebar-title { margin-bottom: 10px; }
+            .sidebar a { margin-bottom: 5px; padding: 10px 12px; }
+            .main { padding: 22px 15px; }
+            .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .stat { padding: 15px 12px; }
+            .stat-number { font-size: 24px; }
+            .panel { padding: 18px 14px; }
+            .page-header h1 { font-size: 25px; }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
+    <nav class="navbar">
+        <a href="/" class="brand">
+            <img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo sekolah" class="logo">
+            <span>SDN Kedung Dalam 1</span>
+        </a>
 
-    <!-- Navbar -->
-    <nav class="navbar bg-danger">
-        <div class="container">
-            <a href="/" class="navbar-brand text-white fw-bold d-flex align-items-center">
-    <img
-        src="{{ asset('images/logo-sekolah.png') }}"
-        alt="Logo SDN Kedung Dalam 1"
-        class="admin-navbar-logo me-2"
-    >
-
-    <span>SDN Kedung Dalam 1</span>
-</a>
-
-            <form method="POST" action="/logout">
-                @csrf
-
-                <button type="submit" class="btn btn-light">
-                    Keluar
-                </button>
-            </form>
-        </div>
+        <form method="POST" action="/logout">
+            @csrf
+            <button type="submit" class="logout">Keluar</button>
+        </form>
     </nav>
 
-    <!-- Content -->
-<div class="admin-layout">
+    <div class="layout">
+        <aside class="sidebar">
+            <p class="sidebar-title">MENU UTAMA</p>
+            <a href="/admin/dashboard" class="active">Dashboard</a>
+            <a href="/admin/pendaftar">Data Pendaftar</a>
+            <a href="/admin/pengumuman">Pengumuman</a>
+        </aside>
 
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
+        <main class="main">
+            <header class="page-header">
+                <h1>Dashboard Admin</h1>
+                <p class="muted">Selamat datang, Admin. Pantau pendaftaran dan kelola data PPDB SDN Kedung Dalam 1 di sini.</p>
+            </header>
 
-        <div class="admin-sidebar-title">
-            MENU UTAMA
-        </div>
+            <h2 class="section-title">Ringkasan Pendaftaran</h2>
 
-        <a href="/admin/dashboard" class="admin-sidebar-link active">
-            Dashboard
-        </a>
-
-        <a href="/admin/pendaftar" class="admin-sidebar-link">
-            Data Pendaftar
-        </a>
-
-        <a href="/admin/pengumuman" class="admin-sidebar-link">
-            Pengumuman
-        </a>
-
-    </aside>
-
-    <!-- Area Utama -->
-    <main class="admin-main">
-
-    <div class="admin-header">
-        <h1 class="fw-bold admin-title mb-2">
-            Dashboard Admin
-        </h1>
-
-        <p class="text-secondary admin-subtitle mb-0">
-            Selamat datang, Admin. Kelola data pendaftaran PPDB di sini.
-        </p>
-    </div>
-
-       <!-- Ringkasan -->
-<div class="row g-3 mb-5">
-
-    <!-- Total Pendaftar -->
-    <div class="col">
-        <div class="card stat-card shadow-sm h-100">
-            <div class="card-body p-3">
-
-                <p class="stat-label">
-                    Total Pendaftar
-                </p>
-
-                <h2 class="fw-bold stat-number mb-0">
-                    {{ $totalPendaftar }}
-                </h2>
-
+            <div class="stats">
+                <div class="stat">
+                    <p class="stat-label">Total Pendaftar</p>
+                    <p class="stat-number">{{ $totalPendaftar }}</p>
+                </div>
+                <div class="stat">
+                    <p class="stat-label">Menunggu Verifikasi</p>
+                    <p class="stat-number">{{ $menungguVerifikasi }}</p>
+                </div>
+                <div class="stat">
+                    <p class="stat-label">Terverifikasi</p>
+                    <p class="stat-number">{{ $terverifikasi }}</p>
+                </div>
+                <div class="stat">
+                    <p class="stat-label">Lulus</p>
+                    <p class="stat-number">{{ $lulus }}</p>
+                </div>
+                <div class="stat">
+                    <p class="stat-label">Ditolak</p>
+                    <p class="stat-number">{{ $ditolak }}</p>
+                </div>
             </div>
-        </div>
+
+            <section class="panel">
+                <h2 class="section-title">Progres Kuota PPDB</h2>
+                <p class="panel-description">Pantau jumlah pendaftar dibandingkan dengan kuota maksimal yang ditentukan.</p>
+
+                <div class="quota-summary">
+                    <div>
+                        <div class="small-muted">Pendaftar saat ini</div>
+                        <div class="quota-number">{{ $totalPendaftar }} <span class="small-muted">/ {{ $kuota }}</span></div>
+                    </div>
+                    <div class="small-muted">{{ $persentaseKuota }}% terpakai</div>
+                </div>
+
+                <div class="progress-track" role="progressbar" aria-valuenow="{{ $persentaseKuota }}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-fill" style="width: {{ $persentaseKuota }}%;"></div>
+                </div>
+
+                <div class="quota-foot">
+                    <span>Sisa kuota: {{ $sisaKuota }} peserta</span>
+                    <span>Kuota maksimal: {{ $kuota }} peserta</span>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2 class="section-title">Pengaturan Kuota PPDB</h2>
+                <p class="panel-description">Atur jumlah maksimal peserta yang dapat mendaftar.</p>
+
+                @if (session('success'))
+                    <div class="alert-success">{{ session('success') }}</div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert-error">{{ $errors->first('kuota') }}</div>
+                @endif
+
+                <form action="{{ url('/admin/pengaturan-kuota') }}" method="POST">
+                    @csrf
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="kuota" class="form-label">Kuota Maksimal Pendaftar</label>
+                            <input type="number" id="kuota" name="kuota" min="1" value="{{ old('kuota', $kuota) }}" class="form-input" required>
+                        </div>
+                        <button type="submit" class="primary-button">Simpan Kuota</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel">
+                <h2 class="section-title">Pendaftar Terbaru</h2>
+                <p class="panel-description">Lima pendaftaran terbaru yang tercatat di sistem.</p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Nama Pendaftar</th>
+                                <th>Tanggal Daftar</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($pendaftarTerbaru as $pendaftar)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $pendaftar->nama_lengkap ?? '-' }}</td>
+                                    <td>{{ $pendaftar->created_at ? $pendaftar->created_at->format('d/m/Y') : '-' }}</td>
+                                    <td><span class="status">{{ $pendaftar->status ?? 'Belum ada status' }}</span></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="empty">Belum ada pendaftar yang tercatat.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
     </div>
-
-
-    <!-- Menunggu Verifikasi -->
-    <div class="col">
-        <div class="card stat-card shadow-sm h-100">
-            <div class="card-body p-3">
-
-                <p class="stat-label">
-                    Menunggu Verifikasi
-                </p>
-
-                <h2 class="fw-bold stat-number mb-0">
-                    {{ $menungguVerifikasi }}
-                </h2>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Terverifikasi -->
-    <div class="col">
-        <div class="card stat-card shadow-sm h-100">
-            <div class="card-body p-3">
-
-                <p class="stat-label">
-                    Terverifikasi
-                </p>
-
-                <h2 class="fw-bold stat-number mb-0">
-                    {{ $terverifikasi }}
-                </h2>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Lulus -->
-    <div class="col">
-        <div class="card stat-card shadow-sm h-100">
-            <div class="card-body p-3">
-
-                <p class="stat-label">
-                    Lulus
-                </p>
-
-                <h2 class="fw-bold stat-number mb-0">
-                    {{ $lulus }}
-                </h2>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Ditolak -->
-    <div class="col">
-        <div class="card stat-card shadow-sm h-100">
-            <div class="card-body p-3">
-
-                <p class="stat-label">
-                    Ditolak
-                </p>
-
-                <h2 class="fw-bold stat-number mb-0">
-                    {{ $ditolak }}
-                </h2>
-
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-{{-- Pengaturan Kuota PPDB --}}
-<div class="admin-card" style="margin-top: 24px; padding: 24px;">
-    <h3>Pengaturan Kuota PPDB</h3>
-
-    <p>
-        Atur jumlah maksimal peserta yang dapat mendaftar.
-    </p>
-
-    @if (session('success'))
-        <p style="color: green;">
-            {{ session('success') }}
-        </p>
-    @endif
-
-    @if ($errors->any())
-        <p style="color: red;">
-            {{ $errors->first('kuota') }}
-        </p>
-    @endif
-
-    <form action="{{ url('/admin/pengaturan-kuota') }}" method="POST">
-        @csrf
-
-        <label for="kuota">Kuota Maksimal Pendaftar</label>
-
-        <input
-            type="number"
-            id="kuota"
-            name="kuota"
-            min="1"
-            value="{{ old('kuota', $kuota) }}"
-            required
-            style="display: block; width: 100%; max-width: 300px; padding: 10px; margin: 10px 0 16px;"
-        >
-
-        <p>
-            Total pendaftar: <strong>{{ $totalPendaftar }}</strong>
-        </p>
-
-        <p>
-            Sisa kuota: <strong>{{ $sisaKuota }}</strong>
-        </p>
-        <button type="submit">
-            Simpan Kuota
-        </button>
-    </form>
-</div>
-    
-
-</main>
-
-</div>
-
 </body>
 </html>
