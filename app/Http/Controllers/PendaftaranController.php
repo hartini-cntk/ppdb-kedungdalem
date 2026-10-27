@@ -31,14 +31,25 @@ public function create()
         ]);
     }
 
-    $totalPendaftar = Pendaftaran::count();
+$totalPendaftar = Pendaftaran::count();
 
-    $pendaftaranDitutup =
-        $totalPendaftar >= $pengaturan->kuota;
+$waktuSekarang = now();
 
+$belumDibuka = $pengaturan->tanggal_buka
+    && $waktuSekarang->lt($pengaturan->tanggal_buka);
+
+$sudahDitutup = $pengaturan->tanggal_tutup
+    && $waktuSekarang->gt($pengaturan->tanggal_tutup);
+
+$kuotaPenuh = $totalPendaftar >= $pengaturan->kuota;
+
+$pendaftaranDitutup =
+    $belumDibuka || $sudahDitutup || $kuotaPenuh;
+
+    
     return view(
-        'pendaftaran',
-        compact('pendaftaranDitutup')
+    'pendaftaran',
+    compact('pendaftaranDitutup', 'pengaturan')
     );
 }
 
@@ -66,12 +77,36 @@ if (!$pengaturan) {
     ]);
 }
 
-$totalPendaftar = Pendaftaran::count();
 
-if ($totalPendaftar >= $pengaturan->kuota) {
+$totalPendaftar = Pendaftaran::count();
+$waktuSekarang = now();
+
+$belumDibuka = $pengaturan->tanggal_buka
+    && $waktuSekarang->lt($pengaturan->tanggal_buka);
+
+$sudahDitutup = $pengaturan->tanggal_tutup
+    && $waktuSekarang->gt($pengaturan->tanggal_tutup);
+
+$kuotaPenuh = $totalPendaftar >= $pengaturan->kuota;
+
+if ($belumDibuka) {
     return redirect('/pendaftaran')->with(
         'error',
-        'Mohon maaf, pendaftaran PPDB sudah ditutup karena kuota telah terpenuhi.'
+        'Pendaftaran PPDB belum dibuka.'
+    );
+}
+
+if ($sudahDitutup) {
+    return redirect('/pendaftaran')->with(
+        'error',
+        'Mohon maaf, pendaftaran PPDB sudah ditutup.'
+    );
+}
+
+if ($kuotaPenuh) {
+    return redirect('/pendaftaran')->with(
+        'error',
+        'Mohon maaf, kuota pendaftaran PPDB sudah terpenuhi.'
     );
 }
 

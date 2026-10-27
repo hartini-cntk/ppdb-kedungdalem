@@ -14,15 +14,39 @@ use App\Models\Pengumuman;
 use App\Models\PengaturanPpdb;
 
 
-// ==========================
 // BERANDA
-// ==========================
-
 Route::get('/', function () {
-    return view('home');
+    $pengaturan = \App\Models\PengaturanPpdb::firstOrCreate(
+        [],
+        ['kuota' => 100]
+    );
+
+    $totalPendaftar = \App\Models\Pendaftaran::count();
+
+    $waktuSekarang = now();
+
+    $belumDibuka = $pengaturan->tanggal_buka
+        && $waktuSekarang->lt($pengaturan->tanggal_buka);
+
+    $sudahDitutup = $pengaturan->tanggal_tutup
+        && $waktuSekarang->gt($pengaturan->tanggal_tutup);
+
+    $kuotaPenuh = $totalPendaftar >= $pengaturan->kuota;
+
+    $pendaftaranDitutup =
+        $belumDibuka || $sudahDitutup || $kuotaPenuh;
+
+    return view('home', compact(
+        'pengaturan',
+        'pendaftaranDitutup',
+        'belumDibuka',
+        'sudahDitutup',
+        'kuotaPenuh'
+    ));
 });
 
 
+ 
 // ==========================
 // REGISTRASI DAN LOGIN
 // ==========================
@@ -157,6 +181,7 @@ Route::get('/admin/dashboard', function () {
         'ditolak',
         'lulus',
         'kuota',
+        'pengaturan',
         'sisaKuota',
         'persentaseKuota',
         'pendaftarTerbaru'
@@ -297,6 +322,11 @@ Route::post('/admin/pengumuman', [
 Route::post('/admin/pengaturan-kuota', [
     PengaturanPpdbController::class,
     'update'
+])->middleware('auth');
+
+Route::post('/admin/pengaturan-jadwal', [
+    PengaturanPpdbController::class,
+    'updateJadwal'
 ])->middleware('auth');
 
 

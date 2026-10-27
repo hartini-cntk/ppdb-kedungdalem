@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -14,27 +15,18 @@
             color: #212529;
         }
 
-        /* Navbar */
         .navbar {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
 
         .navbar-logo {
-    width: 45px;
-    height: 45px;
-    object-fit: contain;
-    background: transparent;
-    border-radius: 0;
-    padding: 0;
-    }
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
 
-        /* Hero */
         .hero {
-            background: linear-gradient(
-                135deg,
-                #fff3f3 0%,
-                #ffffff 70%
-            );
+            background: linear-gradient(135deg, #fff3f3 0%, #ffffff 70%);
             border-bottom: 1px solid #f1f1f1;
         }
 
@@ -44,49 +36,21 @@
         }
 
         .hero-description {
-    max-width: 700px;
-    line-height: 1.6;
-    margin-left: 0;
-    margin-right: 0;
-}
-
-.hero-content {
-    max-width: 100%;
-    margin: 0;
-    padding: 56px 48px 60px;
-}
-
-
-        .hero-card {
-            border: 1px solid #eeeeee;
-            border-radius: 18px;
+            max-width: 700px;
+            line-height: 1.6;
         }
 
-        .hero-logo-box {
-            background: #fff5f5;
-            border-radius: 14px;
-            padding: 20px;
+        .hero-content {
+            max-width: 100%;
+            margin: 0;
+            padding: 56px 48px 60px;
         }
 
-        .hero-logo {
-            width: 135px;
-            height: 135px;
-            object-fit: contain;
-        }
-
-        .school-stat {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 12px;
-        }
-
-        /* Button */
         .btn-main {
             border-radius: 9px;
             font-weight: 600;
         }
 
-        /* Informasi */
         .section-label {
             color: #dc3545;
             font-size: 14px;
@@ -105,23 +69,10 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
         }
 
-        .info-icon {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fff0f0;
-            color: #dc3545;
-            border-radius: 12px;
-            font-size: 22px;
-        }
-
         .info-card p {
             line-height: 1.6;
         }
 
-        /* Sekolah */
         .school-info {
             background: #f8f9fa;
         }
@@ -152,48 +103,51 @@
             margin-bottom: 4px;
         }
 
-        /* Informasi sekolah - tambahan */
-.school-detail-divider {
-    border-top: 1px solid #eeeeee;
-    margin-top: 22px;
-    padding-top: 18px;
-}
+        .school-detail-divider {
+            border-top: 1px solid #eeeeee;
+            margin-top: 22px;
+            padding-top: 18px;
+        }
 
-.school-hours {
-    min-height: 170px;
-}
+        .school-hours {
+            min-height: 170px;
+        }
 
-.accreditation-box {
-    border-top: 1px solid #eeeeee;
-    margin-top: 24px;
-    padding-top: 18px;
-    text-align: center;
-}
+        .accreditation-box {
+            border-top: 1px solid #eeeeee;
+            margin-top: 24px;
+            padding-top: 18px;
+            text-align: center;
+        }
 
-.accreditation-box .contact-title {
-    margin-bottom: 5px;
-}
+        .accreditation-box .contact-title {
+            margin-bottom: 5px;
+        }
 
-.accreditation-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: #212529;
-}
+        .accreditation-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #212529;
+        }
 
-        /* Footer */
         footer {
             border-top: 1px solid #eeeeee;
         }
 
-       @media (max-width: 768px) {
-    .hero-title {
-        font-size: 40px;
-    }
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 40px;
+            }
 
-    .hero-content {
-        padding: 40px 24px 48px;
-    }
-}
+            .hero-content {
+                padding: 40px 24px 48px;
+            }
+
+            .navbar .container {
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+        }
     </style>
 </head>
 
@@ -203,133 +157,149 @@
     <nav class="navbar bg-danger py-3">
         <div class="container">
 
-            <a class="navbar-brand text-white fw-bold d-flex align-items-center" href="/">
+            <a class="navbar-brand text-white fw-bold d-flex align-items-center"
+               href="/">
                 <img
                     src="{{ asset('images/logo-sekolah.png') }}"
                     alt="Logo SDN Kedung Dalam 1"
                     class="navbar-logo me-2"
                 >
-
                 <span>SDN Kedung Dalam 1</span>
             </a>
 
-            <a href="/akses-ppdb" class="btn btn-light px-4 btn-main">
-                Akses PPDB
-            </a>
+            @if ($pendaftaranDitutup)
+                <button type="button"
+                        class="btn btn-light px-4 btn-main"
+                        disabled>
+                    @if ($belumDibuka)
+                        PPDB Belum Dibuka
+                    @elseif ($sudahDitutup)
+                        PPDB Sudah Ditutup
+                    @else
+                        Kuota Penuh
+                    @endif
+                </button>
+            @else
+                <a href="/akses-ppdb"
+                   class="btn btn-light px-4 btn-main">
+                    Akses PPDB
+                </a>
+            @endif
 
         </div>
     </nav>
 
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 hero-content text-start">
 
-   <!-- KIRI: FOKUS UTAMA PPDB -->
-<div class="col-12 col-lg-8 hero-content text-start">
+                    <p class="section-label mb-3">
+                        PENERIMAAN PESERTA DIDIK BARU
+                    </p>
 
-    <p class="section-label mb-3">
-        PENERIMAAN PESERTA DIDIK BARU
-    </p>
+                    <h1 class="fw-bold hero-title mb-3">
+                        SDN Kedung Dalam 1
+                    </h1>
 
-    <h1 class="fw-bold hero-title mb-3">
-        SDN Kedung Dalam 1
-    </h1>
-
-    <div class="d-inline-block bg-danger text-white px-3 py-2 rounded-pill mb-4 fw-semibold">
-        Tahun Pelajaran 2027/2028
-    </div>
-
-    <p class="text-secondary fs-5 hero-description mb-4">
-        Selamat datang di website PPDB SDN Kedung Dalam 1.
-        Dapatkan informasi pendaftaran dan lakukan proses
-        pendaftaran secara online dengan mudah.
-    </p>
-
-    <a href="/akses-ppdb"
-       class="btn btn-danger px-4 py-3 btn-main">
-        Mulai Pendaftaran
-    </a>
-
-</div>
-
-
-                
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
+                    <div class="d-inline-block bg-danger text-white px-3 py-2 rounded-pill mb-4 fw-semibold">
+                        Tahun Pelajaran 2027/2028
                     </div>
 
+                    <p class="text-secondary fs-5 hero-description mb-4">
+                        Selamat datang di website PPDB SDN Kedung Dalam 1.
+                        Dapatkan informasi pendaftaran dan lakukan proses
+                        pendaftaran secara online dengan mudah.
+                    </p>
+
+                    @if ($pendaftaranDitutup)
+                        <button type="button"
+                                class="btn btn-secondary px-4 py-3 btn-main"
+                                disabled>
+                            @if ($belumDibuka)
+                                Pendaftaran Belum Dibuka
+                            @elseif ($sudahDitutup)
+                                Pendaftaran Sudah Ditutup
+                            @else
+                                Kuota Pendaftaran Penuh
+                            @endif
+                        </button>
+                    @else
+                        <a href="/akses-ppdb"
+                           class="btn btn-danger px-4 py-3 btn-main">
+                            Mulai Pendaftaran
+                        </a>
+                    @endif
+
                 </div>
-
             </div>
-
         </div>
-
     </section>
-
 
     <!-- Informasi PPDB -->
     <section class="py-5">
-
         <div class="container">
 
             <div class="text-center mb-5">
+                <p class="section-label mb-1">INFORMASI</p>
 
-                <p class="section-label mb-1">
-                    INFORMASI
-                </p>
-
-                <h2 class="fw-bold">
-                    Informasi PPDB
-                </h2>
+                <h2 class="fw-bold">Informasi PPDB</h2>
 
                 <p class="text-secondary mb-0">
                     Beberapa informasi yang perlu diketahui sebelum melakukan pendaftaran.
                 </p>
-
             </div>
-
 
             <div class="row g-4">
 
                 <!-- Jadwal -->
                 <div class="col-md-4">
-
                     <div class="card info-card h-100 shadow-sm">
-
                         <div class="card-body p-4">
 
-                            
                             <h5 class="fw-bold mb-2">
                                 Jadwal Pendaftaran
                             </h5>
 
-                            <p class="text-secondary mb-0">
-                                Informasi mengenai jadwal dan waktu
-                                pelaksanaan PPDB dapat dilihat sebelum
-                                melakukan pendaftaran.
+                            <p class="text-secondary mb-2">
+                                Jadwal pelaksanaan PPDB SDN Kedung Dalam 1.
                             </p>
 
+                            <div class="small mb-2">
+                                <strong>Tanggal Buka:</strong><br>
+
+                                @if ($pengaturan->tanggal_buka)
+                                    {{ $pengaturan->tanggal_buka->translatedFormat('d F Y, H:i') }} WIB
+                                @else
+                                    <span class="text-secondary">
+                                        Belum ditentukan
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="small">
+                                <strong>Tanggal Tutup:</strong><br>
+
+                                @if ($pengaturan->tanggal_tutup)
+                                    {{ $pengaturan->tanggal_tutup->translatedFormat('d F Y, H:i') }} WIB
+                                @else
+                                    <span class="text-secondary">
+                                        Belum ditentukan
+                                    </span>
+                                @endif
+                            </div>
+
                         </div>
-
                     </div>
-
                 </div>
-
 
                 <!-- Persyaratan -->
                 <div class="col-md-4">
-
                     <div class="card info-card h-100 shadow-sm">
-
                         <div class="card-body p-4">
 
-                            
-
-                            <h5 class="fw-bold mb-2">
-                                Persyaratan
-                            </h5>
+                            <h5 class="fw-bold mb-2">Persyaratan</h5>
 
                             <p class="text-secondary mb-0">
                                 Persiapkan dokumen dan persyaratan yang
@@ -337,20 +307,13 @@
                             </p>
 
                         </div>
-
                     </div>
-
                 </div>
-
 
                 <!-- Alur -->
                 <div class="col-md-4">
-
                     <div class="card info-card h-100 shadow-sm">
-
                         <div class="card-body p-4">
-
-                            
 
                             <h5 class="fw-bold mb-2">
                                 Alur Pendaftaran
@@ -363,159 +326,137 @@
                             </p>
 
                         </div>
-
                     </div>
-
                 </div>
 
             </div>
-
         </div>
-
     </section>
-
 
     <!-- Informasi Sekolah -->
-    <div class="text-center mb-5">
+    <section class="school-info py-5">
+        <div class="container">
 
-    <p class="section-label mb-1">
-        INFORMASI SEKOLAH
-    </p>
+            <div class="text-center mb-5">
+                <p class="section-label mb-1">
+                    INFORMASI SEKOLAH
+                </p>
 
-    <h2 class="fw-bold">
-        SDN Kedung Dalam 1
-    </h2>
+                <h2 class="fw-bold">
+                    SDN Kedung Dalam 1
+                </h2>
 
-    <p class="text-secondary mt-3 mb-0 mx-auto" style="max-width: 700px;">
-        Sekolah Dasar Negeri yang mendukung perkembangan peserta didik
-        melalui lingkungan belajar yang nyaman dan positif.
-    </p>
+                <p class="text-secondary mt-3 mb-0 mx-auto"
+                   style="max-width: 700px;">
+                    Sekolah Dasar Negeri yang mendukung perkembangan
+                    peserta didik melalui lingkungan belajar yang
+                    nyaman dan positif.
+                </p>
+            </div>
 
-</div>
+            <div class="row g-4 align-items-stretch">
 
+                <!-- Alamat -->
+                <div class="col-lg-5">
+                    <div class="school-box">
 
-           <div class="row g-4 align-items-stretch">
+                        <p class="section-label mb-2">
+                            ALAMAT SEKOLAH
+                        </p>
 
+                        <h5 class="fw-bold mb-3">
+                            Lokasi Sekolah
+                        </h5>
 
-<!-- Alamat -->
-<div class="col-lg-5">
+                        <p class="text-secondary mb-0">
+                            JL. KH. Musa Kp. Margasari Desa Kedung Dalam
+                            RT.07 RW.02
+                            <br>
+                            Kec. Mauk - Kab. Tangerang - Banten 15530
+                        </p>
 
-    <div class="school-box">
+                        <div class="school-detail-divider">
+                            <div class="contact-title">
+                                Email Sekolah
+                            </div>
 
-        <p class="section-label mb-2">
-            ALAMAT SEKOLAH
-        </p>
+                            <p class="fw-semibold mb-0">
+                                sdnkedungdalamsatu@gmail.com
+                            </p>
+                        </div>
 
-        <h5 class="fw-bold mb-3">
-            Lokasi Sekolah
-        </h5>
-
-        <p class="text-secondary mb-0">
-            JL. KH. Musa Kp. Margasari Desa Kedung Dalam
-            RT.07 RW.02
-            <br>
-            Kec. Mauk - Kab. Tangerang - Banten 15530
-        </p>
-
-        <!-- Email Sekolah -->
-<div class="school-detail-divider">
-
-    <div class="contact-title">
-        Email Sekolah
-    </div>
-
-    <p class="fw-semibold mb-0">
-         sdnkedungdalamsatu@gmail.com
-    </p>
-
-</div>
-    </div>
-
-</div>
-
-
-                <!-- Kontak & Jam -->
-<div class="col-lg-7">
-
-    <div class="school-box school-hours">
-
-        <div class="row g-4">
-
-            <!-- Jam Kegiatan -->
-            <div class="col-md-6">
-
-                <div class="contact-item">
-
-                    <div class="contact-title">
-                        Jam Kegiatan Sekolah
                     </div>
+                </div>
 
-                    <h5 class="fw-bold mb-1">
-                        07.00 - 12.00 WIB
-                    </h5>
+                <!-- Kontak dan Jam -->
+                <div class="col-lg-7">
+                    <div class="school-box school-hours">
 
-                    <small class="text-secondary">
-                        Jam kegiatan belajar di sekolah.
-                    </small>
+                        <div class="row g-4">
 
+                            <!-- Jam Kegiatan -->
+                            <div class="col-md-6">
+                                <div class="contact-item">
+
+                                    <div class="contact-title">
+                                        Jam Kegiatan Sekolah
+                                    </div>
+
+                                    <h5 class="fw-bold mb-1">
+                                        07.00 - 12.00 WIB
+                                    </h5>
+
+                                    <small class="text-secondary">
+                                        Jam kegiatan belajar di sekolah.
+                                    </small>
+
+                                </div>
+                            </div>
+
+                            <!-- Jam Operasional -->
+                            <div class="col-md-6">
+                                <div class="contact-item">
+
+                                    <div class="contact-title">
+                                        Jam Operasional
+                                    </div>
+
+                                    <h5 class="fw-bold mb-1">
+                                        07.00 - 15.00 WIB
+                                    </h5>
+
+                                    <small class="text-secondary">
+                                        Menyesuaikan kebutuhan pelayanan sekolah.
+                                    </small>
+
+                                </div>
+                            </div>
+
+                            <!-- Akreditasi -->
+                            <div class="col-12">
+                                <div class="accreditation-box">
+
+                                    <div class="contact-title">
+                                        Akreditasi
+                                    </div>
+
+                                    <div class="accreditation-value">
+                                        B
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
             </div>
-
-
-            <!-- Jam Operasional -->
-            <div class="col-md-6">
-
-                <div class="contact-item">
-
-                    <div class="contact-title">
-                        Jam Operasional
-                    </div>
-
-                    <h5 class="fw-bold mb-1">
-                        07.00 - 15.00 WIB
-                    </h5>
-
-                    <small class="text-secondary">
-                        Menyesuaikan kebutuhan pelayanan sekolah.
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <!-- Akreditasi -->
-            <div class="col-12">
-
-                <div class="accreditation-box">
-
-                    <div class="contact-title">
-                        Akreditasi
-                    </div>
-
-                    <div class="accreditation-value">
-                        B
-                    </div>
-
-                </div>
-
-            </div>
-
         </div>
-
-    </div>
-
-</div>
-
-</div>
-
     </section>
-
 
     <!-- Footer -->
     <footer class="py-4">
-
         <div class="container text-center">
 
             <p class="mb-1 fw-semibold">
@@ -527,7 +468,6 @@
             </p>
 
         </div>
-
     </footer>
 
 </body>

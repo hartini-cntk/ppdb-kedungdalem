@@ -299,9 +299,12 @@
                     <div class="alert-success">{{ session('success') }}</div>
                 @endif
 
-                @if ($errors->any())
-                    <div class="alert-error">{{ $errors->first('kuota') }}</div>
-                @endif
+                
+@if ($errors->any())
+    <div class="alert-error">
+        {{ $errors->first() }}
+    </div>
+@endif
 
                 <form action="{{ url('/admin/pengaturan-kuota') }}" method="POST">
                     @csrf
@@ -312,6 +315,69 @@
                         </div>
                         <button type="submit" class="primary-button">Simpan Kuota</button>
                     </div>
+                </form>
+
+            </section>
+
+            <section class="panel">
+                <h2 class="section-title">Pengaturan Jadwal Pendaftaran</h2>
+
+                <p class="panel-description">
+                    Atur tanggal dan jam pembukaan serta penutupan pendaftaran PPDB.
+                </p>
+
+                @if ($errors->any())
+                    <div class="alert-error">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
+                 @if (session('success_jadwal'))
+                      <div class="alert-success">
+                        {{ session('success_jadwal') }}
+                      </div>
+                @endif
+
+                <form action="{{ url('/admin/pengaturan-jadwal') }}" method="POST">
+                    @csrf
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="tanggal_buka" class="form-label">
+                                Tanggal dan Jam Buka
+                            </label>
+
+                            <input
+                                type="datetime-local"
+                                id="tanggal_buka"
+                                name="tanggal_buka"
+                                value="{{ old('tanggal_buka', isset($pengaturan) && $pengaturan->tanggal_buka ? \Carbon\Carbon::parse($pengaturan->tanggal_buka)->format('Y-m-d\TH:i') : '') }}"
+                                class="form-input"
+                            >
+                        </div>
+
+                        <div class="form-field">
+                            <label for="tanggal_tutup" class="form-label">
+                                Tanggal dan Jam Tutup
+                            </label>
+
+                            <input
+                                type="datetime-local"
+                                id="tanggal_tutup"
+                                name="tanggal_tutup"
+                                value="{{ old('tanggal_tutup', isset($pengaturan) && $pengaturan->tanggal_tutup ? \Carbon\Carbon::parse($pengaturan->tanggal_tutup)->format('Y-m-d\TH:i') : '') }}"
+                                class="form-input"
+                            >
+                        </div>
+                    </div>
+
+                    <p class="small-muted" style="margin: 14px 0;">
+                        Kosongkan jadwal jika tanggal pendaftaran belum ditentukan.
+                    </p>
+
+                    <button type="submit" class="primary-button">
+                        Simpan Jadwal
+                    </button>
                 </form>
             </section>
 

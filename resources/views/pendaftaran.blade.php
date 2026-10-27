@@ -34,9 +34,19 @@
     </div>
 @endif
 
+
 @if ($pendaftaranDitutup)
     <div class="alert alert-danger">
-        Pendaftaran PPDB sudah ditutup karena kuota telah terpenuhi.
+        <strong>Pendaftaran PPDB belum dapat dilakukan.</strong>
+        <p class="mb-0 mt-1">
+            @if (isset($pengaturan) && $pengaturan->tanggal_buka && now()->lt($pengaturan->tanggal_buka))
+                Pendaftaran belum dibuka. Silakan kembali sesuai jadwal yang ditentukan.
+            @elseif (isset($pengaturan) && $pengaturan->tanggal_tutup && now()->gt($pengaturan->tanggal_tutup))
+                Pendaftaran telah melewati batas waktu.
+            @else
+                Kuota pendaftaran telah terpenuhi.
+            @endif
+        </p>
     </div>
 @endif
 
@@ -610,9 +620,20 @@
                     </div>
 
                 </form>
+
+                
                 @else
     <div class="alert alert-warning">
-        Formulir pendaftaran tidak dapat diisi karena kuota telah terpenuhi.
+        <strong>Formulir pendaftaran belum dapat diisi.</strong>
+        <p class="mb-0 mt-1">
+            @if ($pengaturan->tanggal_buka && now()->lt($pengaturan->tanggal_buka))
+                Pendaftaran belum dibuka. Silakan kembali sesuai jadwal.
+            @elseif ($pengaturan->tanggal_tutup && now()->gt($pengaturan->tanggal_tutup))
+                Pendaftaran sudah melewati batas waktu.
+            @else
+                Kuota pendaftaran telah terpenuhi.
+            @endif
+        </p>
     </div>
 @endif
 
