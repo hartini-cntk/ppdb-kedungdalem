@@ -53,7 +53,7 @@
 .hero-content {
     max-width: 100%;
     margin: 0;
-    padding: 30px px 20px;
+    padding: 56px 48px 60px;
 }
 
 
@@ -185,11 +185,15 @@
             border-top: 1px solid #eeeeee;
         }
 
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 40px;
-            }
-        }
+       @media (max-width: 768px) {
+    .hero-title {
+        font-size: 40px;
+    }
+
+    .hero-content {
+        padding: 40px 24px 48px;
+    }
+}
     </style>
 </head>
 
