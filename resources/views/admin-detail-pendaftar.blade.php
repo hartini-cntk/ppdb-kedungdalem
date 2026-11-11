@@ -356,6 +356,14 @@
                     <span class="info-label">No. HP Orang Tua/Wali</span>
                     <span class="info-value">{{ $pendaftaran->no_hp }}</span>
                 </div>
+
+<div class="info-row">
+    <span class="info-label">Email Orang Tua/Wali</span>
+    <span class="info-value">
+        {{ $pendaftaran->email_orang_tua ?? '-' }}
+    </span>
+</div>
+
             </div>
         </div>
     </section>

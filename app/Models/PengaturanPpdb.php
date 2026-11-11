@@ -12,6 +12,10 @@ class PengaturanPpdb extends Model
         'kuota',
         'tanggal_buka',
         'tanggal_tutup',
+        'tanggal_daftar_ulang',
+        'jam_daftar_ulang',
+        'lokasi_daftar_ulang',
+        'persyaratan_daftar_ulang',
     ];
 
     protected function casts(): array
@@ -19,6 +23,7 @@ class PengaturanPpdb extends Model
         return [
             'tanggal_buka' => 'datetime',
             'tanggal_tutup' => 'datetime',
+            'tanggal_daftar_ulang' => 'date',
         ];
     }
 }

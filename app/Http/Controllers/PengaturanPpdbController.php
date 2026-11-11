@@ -15,6 +15,7 @@ class PengaturanPpdbController extends Controller
         );
     }
 
+    // Mengatur kuota PPDB
     public function update(Request $request)
     {
         $request->validate([
@@ -33,6 +34,7 @@ class PengaturanPpdbController extends Controller
         );
     }
 
+    // Mengatur jadwal PPDB
     public function updateJadwal(Request $request)
     {
         $request->validate([
@@ -50,6 +52,31 @@ class PengaturanPpdbController extends Controller
         return redirect('/admin/dashboard')->with(
             'success_jadwal',
             'Jadwal PPDB berhasil diperbarui.'
+        );
+    }
+
+    // Mengatur informasi daftar ulang
+    public function updateDaftarUlang(Request $request)
+    {
+        $request->validate([
+            'tanggal_daftar_ulang' => 'nullable|date',
+            'jam_daftar_ulang' => 'nullable|string|max:100',
+            'lokasi_daftar_ulang' => 'nullable|string|max:255',
+            'persyaratan_daftar_ulang' => 'nullable|string|max:5000',
+        ]);
+
+        $pengaturan = $this->getPengaturan();
+
+        $pengaturan->update([
+            'tanggal_daftar_ulang' => $request->tanggal_daftar_ulang,
+            'jam_daftar_ulang' => $request->jam_daftar_ulang,
+            'lokasi_daftar_ulang' => $request->lokasi_daftar_ulang,
+            'persyaratan_daftar_ulang' => $request->persyaratan_daftar_ulang,
+        ]);
+
+        return redirect('/admin/dashboard')->with(
+            'success_daftar_ulang',
+            'Informasi daftar ulang berhasil diperbarui.'
         );
     }
 }

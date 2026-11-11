@@ -7,21 +7,23 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\BerkasController;
 use App\Http\Controllers\PengaturanPpdbController;
-use App\Http\Controllers\PengumumanController;
 use App\Models\Pendaftaran;
 use App\Models\Berkas;
-use App\Models\Pengumuman;
 use App\Models\PengaturanPpdb;
 
 
+// ==========================
 // BERANDA
+// ==========================
+
 Route::get('/', function () {
-    $pengaturan = \App\Models\PengaturanPpdb::firstOrCreate(
+
+    $pengaturan = PengaturanPpdb::firstOrCreate(
         [],
         ['kuota' => 100]
     );
 
-    $totalPendaftar = \App\Models\Pendaftaran::count();
+    $totalPendaftar = Pendaftaran::count();
 
     $waktuSekarang = now();
 
@@ -46,7 +48,6 @@ Route::get('/', function () {
 });
 
 
- 
 // ==========================
 // REGISTRASI DAN LOGIN
 // ==========================
@@ -60,6 +61,7 @@ Route::get('/login', [LoginController::class, 'showLogin'])
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/logout', function () {
+
     Auth::logout();
 
     request()->session()->invalidate();
@@ -91,22 +93,60 @@ Route::get('/dashboard', function () {
         )->get();
     }
 
-    $sudahUploadBerkas = $berkas->count() > 0;
+    // Tiga dokumen wajib
+    $jenisBerkasWajib = [
+        'Kartu Keluarga',
+        'Akta Kelahiran',
+        'KTP Ibu',
+    ];
 
+    // Memeriksa kelengkapan dokumen
+    $sudahUploadBerkas = collect($jenisBerkasWajib)->every(
+        function ($jenis) use ($berkas) {
+            return $berkas->contains(
+                'jenis_berkas',
+                $jenis
+            );
+        }
+    );
+
+    // Memeriksa verifikasi dokumen
     $berkasSudahDiverifikasi =
         $sudahUploadBerkas &&
-        $berkas->every(function ($item) {
+        $berkas->whereIn(
+            'jenis_berkas',
+            $jenisBerkasWajib
+        )->every(function ($item) {
             return $item->status === 'Diterima';
         });
 
+    // Memeriksa status pendaftaran
     $sudahTerverifikasi =
         $pendaftaran &&
         $pendaftaran->status === 'Terverifikasi';
 
-    $adaPengumuman =
+    // Memeriksa apakah hasil seleksi sudah diumumkan
+    $hasilSeleksiDiumumkan =
+        $pendaftaran &&
+        in_array($pendaftaran->status, [
+            'Lulus',
+            'Tidak Lulus',
+        ]);
+
+    // Mengambil informasi daftar ulang dari admin
+    $pengaturan = PengaturanPpdb::first();
+
+    // Daftar ulang hanya untuk siswa yang Lulus
+    $tampilkanDaftarUlang =
         $pendaftaran &&
         $pendaftaran->status === 'Lulus' &&
-        Pengumuman::count() > 0;
+        $pengaturan &&
+        (
+            $pengaturan->tanggal_daftar_ulang ||
+            $pengaturan->jam_daftar_ulang ||
+            $pengaturan->lokasi_daftar_ulang ||
+            $pengaturan->persyaratan_daftar_ulang
+        );
 
     return view('dashboard', compact(
         'pendaftaran',
@@ -114,7 +154,9 @@ Route::get('/dashboard', function () {
         'sudahUploadBerkas',
         'berkasSudahDiverifikasi',
         'sudahTerverifikasi',
-        'adaPengumuman'
+        'hasilSeleksiDiumumkan',
+        'pengaturan',
+        'tampilkanDaftarUlang'
     ));
 
 })->middleware('auth');
@@ -296,27 +338,7 @@ Route::post('/admin/berkas/{id}/tolak', [
 
 
 // ==========================
-// PENGUMUMAN ADMIN
-// ==========================
-
-Route::get('/admin/pengumuman', [
-    PengumumanController::class,
-    'index'
-])->middleware('auth');
-
-Route::get('/admin/pengumuman/tambah', [
-    PengumumanController::class,
-    'create'
-])->middleware('auth');
-
-Route::post('/admin/pengumuman', [
-    PengumumanController::class,
-    'store'
-])->middleware('auth');
-
-
-// ==========================
-// PENGATURAN KUOTA PPDB
+// PENGATURAN PPDB
 // ==========================
 
 Route::post('/admin/pengaturan-kuota', [
@@ -327,6 +349,11 @@ Route::post('/admin/pengaturan-kuota', [
 Route::post('/admin/pengaturan-jadwal', [
     PengaturanPpdbController::class,
     'updateJadwal'
+])->middleware('auth');
+
+Route::post('/admin/pengaturan-daftar-ulang', [
+    PengaturanPpdbController::class,
+    'updateDaftarUlang'
 ])->middleware('auth');
 
 
@@ -365,27 +392,6 @@ Route::post('/upload-berkas', [
 
 
 // ==========================
-// PENGUMUMAN SISWA
-// ==========================
-
-Route::get('/pengumuman', function () {
-
-    $pengumumans = Pengumuman::latest()->get();
-
-    $pendaftaran = Pendaftaran::where(
-        'user_id',
-        Auth::id()
-    )->latest()->first();
-
-    return view('pengumuman', compact(
-        'pengumumans',
-        'pendaftaran'
-    ));
-
-})->middleware('auth');
-
-
-// ==========================
 // STATUS PENDAFTARAN SISWA
 // ==========================
 
@@ -413,7 +419,42 @@ Route::get('/bukti-pendaftaran', function () {
     $pendaftaran = Pendaftaran::where(
         'user_id',
         Auth::id()
-    )->latest()->firstOrFail();
+    )->latest()->first();
+
+    if (!$pendaftaran) {
+        return redirect('/pendaftaran')->with(
+            'error',
+            'Silakan isi formulir pendaftaran terlebih dahulu.'
+        );
+    }
+
+    // Tiga dokumen wajib
+    $jenisBerkasWajib = [
+        'Kartu Keluarga',
+        'Akta Kelahiran',
+        'KTP Ibu',
+    ];
+
+    $berkas = Berkas::where(
+        'id_pendaftaran',
+        $pendaftaran->id
+    )->whereIn(
+        'jenis_berkas',
+        $jenisBerkasWajib
+    )->pluck('jenis_berkas');
+
+    $semuaBerkasLengkap = collect($jenisBerkasWajib)->every(
+        function ($jenis) use ($berkas) {
+            return $berkas->contains($jenis);
+        }
+    );
+
+    if (!$semuaBerkasLengkap) {
+        return redirect('/upload-berkas')->with(
+            'error',
+            'Lengkapi tiga berkas wajib terlebih dahulu untuk melihat bukti pendaftaran.'
+        );
+    }
 
     return view(
         'bukti-pendaftaran',

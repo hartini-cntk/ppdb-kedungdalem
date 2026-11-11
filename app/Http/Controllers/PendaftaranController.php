@@ -8,113 +8,129 @@ use App\Models\PengaturanPpdb;
 
 class PendaftaranController extends Controller
 {
-   
-public function create()
-{
-    $pendaftaranSiswa = Pendaftaran::where(
-        'user_id',
-        auth()->id()
-    )->first();
+    // Status yang tidak boleh mengubah formulir
+    private $statusTerkunci = [
+        'Terverifikasi',
+        'Lulus',
+        'Tidak Lulus',
+        'Ditolak',
+    ];
 
-    if ($pendaftaranSiswa) {
-        return redirect('/dashboard')->with(
-            'error',
-            'Kamu sudah mengisi formulir pendaftaran.'
+    public function create()
+    {
+        $pendaftaran = Pendaftaran::where(
+            'user_id',
+            auth()->id()
+        )->first();
+
+        $pengaturan = PengaturanPpdb::first();
+
+        if (!$pengaturan) {
+            $pengaturan = PengaturanPpdb::create([
+                'kuota' => 100,
+            ]);
+        }
+
+        $totalPendaftar = Pendaftaran::count();
+        $waktuSekarang = now();
+
+        $belumDibuka = $pengaturan->tanggal_buka
+            && $waktuSekarang->lt($pengaturan->tanggal_buka);
+
+        $sudahDitutup = $pengaturan->tanggal_tutup
+            && $waktuSekarang->gt($pengaturan->tanggal_tutup);
+
+        $kuotaPenuh = $totalPendaftar >= $pengaturan->kuota;
+
+        $pendaftaranDitutup =
+            $belumDibuka || $sudahDitutup || $kuotaPenuh;
+
+        $formulirTerkunci = $pendaftaran
+            && in_array(
+                trim($pendaftaran->status ?? ''),
+                $this->statusTerkunci
+            );
+
+        return view(
+            'pendaftaran',
+            compact(
+                'pendaftaran',
+                'pendaftaranDitutup',
+                'pengaturan',
+                'formulirTerkunci'
+            )
         );
     }
 
-    $pengaturan = PengaturanPpdb::first();
-
-    if (!$pengaturan) {
-        $pengaturan = PengaturanPpdb::create([
-            'kuota' => 100,
-        ]);
-    }
-
-$totalPendaftar = Pendaftaran::count();
-
-$waktuSekarang = now();
-
-$belumDibuka = $pengaturan->tanggal_buka
-    && $waktuSekarang->lt($pengaturan->tanggal_buka);
-
-$sudahDitutup = $pengaturan->tanggal_tutup
-    && $waktuSekarang->gt($pengaturan->tanggal_tutup);
-
-$kuotaPenuh = $totalPendaftar >= $pengaturan->kuota;
-
-$pendaftaranDitutup =
-    $belumDibuka || $sudahDitutup || $kuotaPenuh;
-
-    
-    return view(
-    'pendaftaran',
-    compact('pendaftaranDitutup', 'pengaturan')
-    );
-}
-
-
     public function store(Request $request)
     {
+        $pendaftaranSiswa = Pendaftaran::where(
+            'user_id',
+            auth()->id()
+        )->first();
 
-    $pendaftaranSiswa = Pendaftaran::where(
-    'user_id',
-    auth()->id()
-)->first();
+        // Cegah perubahan jika status sudah terkunci
+        if (
+            $pendaftaranSiswa &&
+            in_array(
+                trim($pendaftaranSiswa->status ?? ''),
+                $this->statusTerkunci
+            )
+        ) {
+            return redirect('/dashboard')->with(
+                'error',
+                'Formulir tidak dapat diubah karena sudah masuk tahap verifikasi atau pengumuman.'
+            );
+        }
 
-if ($pendaftaranSiswa) {
-    return redirect('/dashboard')->with(
-        'error',
-        'Kamu sudah mengisi formulir pendaftaran.'
-    );
-}
+        // Periksa jadwal dan kuota untuk pendaftaran baru
+        if (!$pendaftaranSiswa) {
+            $pengaturan = PengaturanPpdb::first();
 
-$pengaturan = PengaturanPpdb::first();
+            if (!$pengaturan) {
+                $pengaturan = PengaturanPpdb::create([
+                    'kuota' => 100,
+                ]);
+            }
 
-if (!$pengaturan) {
-    $pengaturan = PengaturanPpdb::create([
-        'kuota' => 100,
-    ]);
-}
+            $totalPendaftar = Pendaftaran::count();
+            $waktuSekarang = now();
 
+            $belumDibuka = $pengaturan->tanggal_buka
+                && $waktuSekarang->lt($pengaturan->tanggal_buka);
 
-$totalPendaftar = Pendaftaran::count();
-$waktuSekarang = now();
+            $sudahDitutup = $pengaturan->tanggal_tutup
+                && $waktuSekarang->gt($pengaturan->tanggal_tutup);
 
-$belumDibuka = $pengaturan->tanggal_buka
-    && $waktuSekarang->lt($pengaturan->tanggal_buka);
+            $kuotaPenuh = $totalPendaftar >= $pengaturan->kuota;
 
-$sudahDitutup = $pengaturan->tanggal_tutup
-    && $waktuSekarang->gt($pengaturan->tanggal_tutup);
+            if ($belumDibuka) {
+                return redirect('/pendaftaran')->with(
+                    'error',
+                    'Pendaftaran PPDB belum dibuka.'
+                );
+            }
 
-$kuotaPenuh = $totalPendaftar >= $pengaturan->kuota;
+            if ($sudahDitutup) {
+                return redirect('/pendaftaran')->with(
+                    'error',
+                    'Mohon maaf, pendaftaran PPDB sudah ditutup.'
+                );
+            }
 
-if ($belumDibuka) {
-    return redirect('/pendaftaran')->with(
-        'error',
-        'Pendaftaran PPDB belum dibuka.'
-    );
-}
+            if ($kuotaPenuh) {
+                return redirect('/pendaftaran')->with(
+                    'error',
+                    'Mohon maaf, kuota pendaftaran PPDB sudah terpenuhi.'
+                );
+            }
+        }
 
-if ($sudahDitutup) {
-    return redirect('/pendaftaran')->with(
-        'error',
-        'Mohon maaf, pendaftaran PPDB sudah ditutup.'
-    );
-}
-
-if ($kuotaPenuh) {
-    return redirect('/pendaftaran')->with(
-        'error',
-        'Mohon maaf, kuota pendaftaran PPDB sudah terpenuhi.'
-    );
-}
-
-        $request->validate([
+        $validated = $request->validate([
             // Data calon siswa
-            'nama_lengkap' => 'required',
-            'nik' => 'required',
-            'nisn' => 'nullable',
+            'nama_lengkap' => 'required|string',
+            'nik' => ['required', 'regex:/^[0-9]{16}$/'],
+            'nisn' => ['required', 'regex:/^[0-9]{10}$/'],
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required',
@@ -148,53 +164,32 @@ if ($kuotaPenuh) {
 
             // Kontak
             'no_hp' => 'required',
+            'email_orang_tua' => [
+                'required',
+                'email',
+                'max:255'
+            ],
+        ], [
+            'nik.required' => 'NIK wajib diisi.',
+            'nik.regex' => 'NIK harus terdiri dari tepat 16 digit angka.',
+            'nisn.required' => 'NISN wajib diisi.',
+            'nisn.regex' => 'NISN harus terdiri dari tepat 10 digit angka.',
+            'email_orang_tua.required' => 'Email orang tua wajib diisi.',
+            'email_orang_tua.email' => 'Format email orang tua tidak valid.',
         ]);
 
-        Pendaftaran::create([
-            'user_id' => auth()->id(),
+        if ($pendaftaranSiswa) {
+            $pendaftaranSiswa->update($validated);
 
-            // Data calon siswa
-            'nama_lengkap' => $request->nama_lengkap,
-            'nik' => $request->nik,
-            'nisn' => $request->nisn,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'agama' => $request->agama,
-            'anak_ke' => $request->anak_ke,
-            'jumlah_saudara' => $request->jumlah_saudara,
+            $pesan = 'Data formulir pendaftaran berhasil diperbarui.';
+        } else {
+            $validated['user_id'] = auth()->id();
 
-            // Alamat
-            'alamat' => $request->alamat,
-            'rt' => $request->rt,
-            'rw' => $request->rw,
-            'desa' => $request->desa,
-            'kecamatan' => $request->kecamatan,
-            'kabupaten' => $request->kabupaten,
-            'provinsi' => $request->provinsi,
-            'asal_sekolah' => $request->asal_sekolah,
+            Pendaftaran::create($validated);
 
-            // Data ayah
-            'nama_ayah' => $request->nama_ayah,
-            'nik_ayah' => $request->nik_ayah,
-            'pendidikan_ayah' => $request->pendidikan_ayah,
-            'pekerjaan_ayah' => $request->pekerjaan_ayah,
-            'penghasilan_ayah' => $request->penghasilan_ayah,
+            $pesan = 'Data pendaftaran berhasil disimpan.';
+        }
 
-            // Data ibu
-            'nama_ibu' => $request->nama_ibu,
-            'nik_ibu' => $request->nik_ibu,
-            'pendidikan_ibu' => $request->pendidikan_ibu,
-            'pekerjaan_ibu' => $request->pekerjaan_ibu,
-            'penghasilan_ibu' => $request->penghasilan_ibu,
-
-            // Kontak
-            'no_hp' => $request->no_hp,
-        ]);
-
-        return redirect('/dashboard')->with(
-            'success',
-            'Data pendaftaran berhasil disimpan.'
-        );
+        return redirect('/dashboard')->with('success', $pesan);
     }
 }

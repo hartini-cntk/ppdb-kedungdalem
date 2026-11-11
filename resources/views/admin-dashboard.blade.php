@@ -105,9 +105,14 @@
             padding: 20px 16px;
             box-shadow: 0 2px 6px #17203308;
         }
-        
 
-        .stat-label { color: #777f8d; font-size: 12px; min-height: 32px; margin: 0 0 10px; }
+        .stat-label {
+            color: #777f8d;
+            font-size: 12px;
+            min-height: 32px;
+            margin: 0 0 10px;
+        }
+
         .stat-number { font-size: 28px; font-weight: bold; margin: 0; }
 
         .panel {
@@ -119,7 +124,12 @@
             box-shadow: 0 2px 6px #17203308;
         }
 
-        .panel-description { color: #777f8d; font-size: 13px; line-height: 1.6; margin: 0 0 20px; }
+        .panel-description {
+            color: #777f8d;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0 0 20px;
+        }
 
         .quota-summary {
             display: flex;
@@ -151,9 +161,26 @@
             font-size: 12px;
         }
 
-        .form-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+        .form-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
         .form-field { width: 100%; max-width: 300px; }
-        .form-label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+
+        .form-field.full-width {
+            max-width: 100%;
+            flex: 1 1 100%;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
 
         .form-input {
             width: 100%;
@@ -161,6 +188,13 @@
             border: 1px solid #d9dde5;
             border-radius: 7px;
             font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
         }
 
         .primary-button {
@@ -175,13 +209,28 @@
 
         .primary-button:hover { background: #bb2d3b; }
 
-        .alert-success, .alert-error { padding: 12px; border-radius: 7px; font-size: 13px; margin-bottom: 15px; }
+        .alert-success, .alert-error {
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
         .alert-success { background: #edf8f0; color: #24733a; }
         .alert-error { background: #fff0f0; color: #b42332; }
 
         .table-wrap { overflow-x: auto; }
+
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; background: #f8f9fb; color: #687080; padding: 13px 12px; white-space: nowrap; }
+
+        th {
+            text-align: left;
+            background: #f8f9fb;
+            color: #687080;
+            padding: 13px 12px;
+            white-space: nowrap;
+        }
+
         td { padding: 15px 12px; border-bottom: 1px solid #edf0f4; }
         tbody tr:last-child td { border-bottom: 0; }
 
@@ -204,7 +253,12 @@
 
         @media (max-width: 768px) {
             .layout { display: block; }
-            .sidebar { width: 100%; padding: 16px; border-right: 0; border-bottom: 1px solid #e5e7eb; }
+            .sidebar {
+                width: 100%;
+                padding: 16px;
+                border-right: 0;
+                border-bottom: 1px solid #e5e7eb;
+            }
             .sidebar-title { margin-bottom: 10px; }
             .sidebar a { margin-bottom: 5px; padding: 10px 12px; }
             .main { padding: 22px 15px; }
@@ -235,13 +289,14 @@
             <p class="sidebar-title">MENU UTAMA</p>
             <a href="/admin/dashboard" class="active">Dashboard</a>
             <a href="/admin/pendaftar">Data Pendaftar</a>
-            <a href="/admin/pengumuman">Pengumuman</a>
         </aside>
 
         <main class="main">
             <header class="page-header">
                 <h1>Dashboard Admin</h1>
-                <p class="muted">Selamat datang, Admin. Pantau pendaftaran dan kelola data PPDB SDN Kedung Dalam 1 di sini.</p>
+                <p class="muted">
+                    Selamat datang, Admin. Pantau pendaftaran dan kelola data PPDB SDN Kedung Dalam 1 di sini.
+                </p>
             </header>
 
             <h2 class="section-title">Ringkasan Pendaftaran</h2>
@@ -269,19 +324,27 @@
                 </div>
             </div>
 
+            <!-- PROGRES KUOTA -->
             <section class="panel">
                 <h2 class="section-title">Progres Kuota PPDB</h2>
-                <p class="panel-description">Pantau jumlah pendaftar dibandingkan dengan kuota maksimal yang ditentukan.</p>
+                <p class="panel-description">
+                    Pantau jumlah pendaftar dibandingkan dengan kuota maksimal yang ditentukan.
+                </p>
 
                 <div class="quota-summary">
                     <div>
                         <div class="small-muted">Pendaftar saat ini</div>
-                        <div class="quota-number">{{ $totalPendaftar }} <span class="small-muted">/ {{ $kuota }}</span></div>
+                        <div class="quota-number">
+                            {{ $totalPendaftar }}
+                            <span class="small-muted">/ {{ $kuota }}</span>
+                        </div>
                     </div>
                     <div class="small-muted">{{ $persentaseKuota }}% terpakai</div>
                 </div>
 
-                <div class="progress-track" role="progressbar" aria-valuenow="{{ $persentaseKuota }}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-track" role="progressbar"
+                    aria-valuenow="{{ $persentaseKuota }}"
+                    aria-valuemin="0" aria-valuemax="100">
                     <div class="progress-fill" style="width: {{ $persentaseKuota }}%;"></div>
                 </div>
 
@@ -291,34 +354,36 @@
                 </div>
             </section>
 
+            <!-- PENGATURAN KUOTA -->
             <section class="panel">
                 <h2 class="section-title">Pengaturan Kuota PPDB</h2>
-                <p class="panel-description">Atur jumlah maksimal peserta yang dapat mendaftar.</p>
+                <p class="panel-description">
+                    Atur jumlah maksimal peserta yang dapat mendaftar.
+                </p>
 
                 @if (session('success'))
                     <div class="alert-success">{{ session('success') }}</div>
                 @endif
 
-                
-@if ($errors->any())
-    <div class="alert-error">
-        {{ $errors->first() }}
-    </div>
-@endif
+                @if ($errors->any())
+                    <div class="alert-error">{{ $errors->first() }}</div>
+                @endif
 
                 <form action="{{ url('/admin/pengaturan-kuota') }}" method="POST">
                     @csrf
                     <div class="form-row">
                         <div class="form-field">
                             <label for="kuota" class="form-label">Kuota Maksimal Pendaftar</label>
-                            <input type="number" id="kuota" name="kuota" min="1" value="{{ old('kuota', $kuota) }}" class="form-input" required>
+                            <input type="number" id="kuota" name="kuota"
+                                min="1" value="{{ old('kuota', $kuota) }}"
+                                class="form-input" required>
                         </div>
                         <button type="submit" class="primary-button">Simpan Kuota</button>
                     </div>
                 </form>
-
             </section>
 
+            <!-- PENGATURAN JADWAL -->
             <section class="panel">
                 <h2 class="section-title">Pengaturan Jadwal Pendaftaran</h2>
 
@@ -326,16 +391,8 @@
                     Atur tanggal dan jam pembukaan serta penutupan pendaftaran PPDB.
                 </p>
 
-                @if ($errors->any())
-                    <div class="alert-error">
-                        {{ $errors->first() }}
-                    </div>
-                @endif
-
-                 @if (session('success_jadwal'))
-                      <div class="alert-success">
-                        {{ session('success_jadwal') }}
-                      </div>
+                @if (session('success_jadwal'))
+                    <div class="alert-success">{{ session('success_jadwal') }}</div>
                 @endif
 
                 <form action="{{ url('/admin/pengaturan-jadwal') }}" method="POST">
@@ -346,28 +403,20 @@
                             <label for="tanggal_buka" class="form-label">
                                 Tanggal dan Jam Buka
                             </label>
-
-                            <input
-                                type="datetime-local"
-                                id="tanggal_buka"
+                            <input type="datetime-local" id="tanggal_buka"
                                 name="tanggal_buka"
                                 value="{{ old('tanggal_buka', isset($pengaturan) && $pengaturan->tanggal_buka ? \Carbon\Carbon::parse($pengaturan->tanggal_buka)->format('Y-m-d\TH:i') : '') }}"
-                                class="form-input"
-                            >
+                                class="form-input">
                         </div>
 
                         <div class="form-field">
                             <label for="tanggal_tutup" class="form-label">
                                 Tanggal dan Jam Tutup
                             </label>
-
-                            <input
-                                type="datetime-local"
-                                id="tanggal_tutup"
+                            <input type="datetime-local" id="tanggal_tutup"
                                 name="tanggal_tutup"
                                 value="{{ old('tanggal_tutup', isset($pengaturan) && $pengaturan->tanggal_tutup ? \Carbon\Carbon::parse($pengaturan->tanggal_tutup)->format('Y-m-d\TH:i') : '') }}"
-                                class="form-input"
-                            >
+                                class="form-input">
                         </div>
                     </div>
 
@@ -375,15 +424,105 @@
                         Kosongkan jadwal jika tanggal pendaftaran belum ditentukan.
                     </p>
 
+                    <button type="submit" class="primary-button">Simpan Jadwal</button>
+                </form>
+            </section>
+
+            <!-- PENGATURAN DAFTAR ULANG -->
+            <section class="panel">
+                <h2 class="section-title">Informasi Daftar Ulang</h2>
+
+                <p class="panel-description">
+                    Isi informasi pelaksanaan daftar ulang bagi calon siswa yang dinyatakan lulus.
+                    Informasi ini nantinya ditampilkan di dashboard siswa yang berstatus Lulus.
+                </p>
+
+                @if (session('success_daftar_ulang'))
+                    <div class="alert-success">
+                        {{ session('success_daftar_ulang') }}
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert-error">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
+                <form action="{{ url('/admin/pengaturan-daftar-ulang') }}" method="POST">
+                    @csrf
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="tanggal_daftar_ulang" class="form-label">
+                                Tanggal Daftar Ulang
+                            </label>
+                            <input
+                                type="date"
+                                id="tanggal_daftar_ulang"
+                                name="tanggal_daftar_ulang"
+                                value="{{ old('tanggal_daftar_ulang', isset($pengaturan) && $pengaturan->tanggal_daftar_ulang ? \Carbon\Carbon::parse($pengaturan->tanggal_daftar_ulang)->format('Y-m-d') : '') }}"
+                                class="form-input"
+                            >
+                        </div>
+
+                        <div class="form-field">
+                            <label for="jam_daftar_ulang" class="form-label">
+                                Jam Daftar Ulang
+                            </label>
+                            <input
+                                type="text"
+                                id="jam_daftar_ulang"
+                                name="jam_daftar_ulang"
+                                value="{{ old('jam_daftar_ulang', $pengaturan->jam_daftar_ulang ?? '') }}"
+                                class="form-input"
+                                placeholder="Contoh: 08.00 - 12.00 WIB"
+                            >
+                        </div>
+
+                        <div class="form-field full-width">
+                            <label for="lokasi_daftar_ulang" class="form-label">
+                                Lokasi Daftar Ulang
+                            </label>
+                            <input
+                                type="text"
+                                id="lokasi_daftar_ulang"
+                                name="lokasi_daftar_ulang"
+                                value="{{ old('lokasi_daftar_ulang', $pengaturan->lokasi_daftar_ulang ?? '') }}"
+                                class="form-input"
+                                placeholder="Contoh: SDN Kedung Dalem 1"
+                            >
+                        </div>
+
+                        <div class="form-field full-width">
+                            <label for="persyaratan_daftar_ulang" class="form-label">
+                                Persyaratan Daftar Ulang
+                            </label>
+                            <textarea
+                                id="persyaratan_daftar_ulang"
+                                name="persyaratan_daftar_ulang"
+                                class="form-input"
+                                placeholder="Tuliskan persyaratan daftar ulang. Pisahkan setiap persyaratan dengan baris baru."
+                            >{{ old('persyaratan_daftar_ulang', $pengaturan->persyaratan_daftar_ulang ?? '') }}</textarea>
+                        </div>
+                    </div>
+
+                    <p class="small-muted" style="margin: 14px 0;">
+                        Informasi dapat dikosongkan jika jadwal daftar ulang belum ditentukan.
+                    </p>
+
                     <button type="submit" class="primary-button">
-                        Simpan Jadwal
+                        Simpan Informasi Daftar Ulang
                     </button>
                 </form>
             </section>
 
+            <!-- PENDAFTAR TERBARU -->
             <section class="panel">
                 <h2 class="section-title">Pendaftar Terbaru</h2>
-                <p class="panel-description">Lima pendaftaran terbaru yang tercatat di sistem.</p>
+                <p class="panel-description">
+                    Lima pendaftaran terbaru yang tercatat di sistem.
+                </p>
 
                 <div class="table-wrap">
                     <table>
@@ -400,12 +539,20 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $pendaftar->nama_lengkap ?? '-' }}</td>
-                                    <td>{{ $pendaftar->created_at ? $pendaftar->created_at->format('d/m/Y') : '-' }}</td>
-                                    <td><span class="status">{{ $pendaftar->status ?? 'Belum ada status' }}</span></td>
+                                    <td>
+                                        {{ $pendaftar->created_at ? $pendaftar->created_at->format('d/m/Y') : '-' }}
+                                    </td>
+                                    <td>
+                                        <span class="status">
+                                            {{ $pendaftar->status ?? 'Belum ada status' }}
+                                        </span>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="empty">Belum ada pendaftar yang tercatat.</td>
+                                    <td colspan="4" class="empty">
+                                        Belum ada pendaftar yang tercatat.
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>

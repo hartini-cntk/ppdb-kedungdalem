@@ -46,7 +46,8 @@ class Pendaftaran extends Model
         'penghasilan_ibu',
 
         // Kontak
-        'no_hp',
+'no_hp',
+'email_orang_tua',
 
         // Status
         'status',
