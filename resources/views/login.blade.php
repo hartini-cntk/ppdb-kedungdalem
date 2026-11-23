@@ -12,14 +12,15 @@
         body {
             background: linear-gradient(
                 135deg,
-                #fff5f5 0%,
+                #f1f7ff 0%,
                 #ffffff 55%
             );
             min-height: 100vh;
         }
 
         .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            background: #103765 !important;
+            box-shadow: 0 2px 10px rgba(16, 55, 101, 0.16);
         }
 
         .login-wrapper {
@@ -34,9 +35,9 @@
         }
 
         .login-header {
-            background: #fff8f8;
+            background: #f2f8ff;
             padding: 30px 20px 20px;
-            border-bottom: 1px solid #f1f1f1;
+            border-bottom: 1px solid #e2edfa;
         }
 
         .login-logo {
@@ -47,7 +48,7 @@
         }
 
         .login-label {
-            color: #dc3545;
+            color: #1769c2;
             font-size: 13px;
             font-weight: 700;
             letter-spacing: 0.5px;
@@ -64,8 +65,8 @@
         }
 
         .form-control:focus {
-            border-color: #dc3545;
-            box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.12);
+            border-color: #1769c2;
+            box-shadow: 0 0 0 0.15rem rgba(23, 105, 194, 0.16);
         }
 
         .btn-login {
@@ -75,7 +76,7 @@
         }
 
         .register-link {
-            color: #dc3545;
+            color: #1769c2;
             text-decoration: none;
             font-weight: 600;
         }
@@ -89,13 +90,11 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar bg-danger py-3">
+    <nav class="navbar bg-primary py-3">
 
         <div class="container">
 
-            <a href="/" class="navbar-brand text-white fw-bold">
-                SDN Kedung Dalam 1
-            </a>
+            <a href="/" class="navbar-brand text-white fw-bold d-flex align-items-center gap-2"><img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo SDN Kedung Dalam 1" style="width:38px;height:38px;object-fit:contain;"><span>SDN Kedung Dalam 1</span></a>
 
             <a href="/akses-ppdb" class="btn btn-light px-4">
                 Kembali
@@ -133,7 +132,7 @@
                         </h1>
 
                         <p class="text-secondary mb-0">
-                            Silakan login untuk melanjutkan proses pendaftaran.
+                            {{ ($adminOnly ?? false) ? 'Masuk ke panel administrasi PPDB.' : 'Silakan login untuk melanjutkan proses pendaftaran.' }}
                         </p>
 
                     </div>
@@ -151,7 +150,7 @@
                         @endif
 
 
-                        <form method="POST" action="/login">
+                        <form method="POST" action="{{ ($adminOnly ?? false) ? '/admin/login' : '/login' }}">
 
                             @csrf
 
@@ -194,36 +193,27 @@
                             <!-- Button -->
                             <button
                                 type="submit"
-                                class="btn btn-danger w-100 btn-login"
+                                class="btn btn-primary w-100 btn-login"
                             >
                                 Login
                             </button>
 
                         </form>
-
-
-                        <!-- Register -->
+@if ($adminOnly ?? false)
                         <div class="text-center mt-4">
-
-                            <p class="text-secondary mb-1">
-                                Belum memiliki akun?
-                            </p>
-
-                            <a href="/register" class="register-link">
-                                Registrasi Akun
-                            </a>
-
+                            <a href="/" class="register-link">Kembali ke Beranda</a>
                         </div>
+                    @else
+                        <div class="text-center mt-4">
+                            <p class="text-secondary mb-1">Belum memiliki akun?</p>
+                            <a href="/register" class="register-link">Registrasi Akun</a>
+                        </div>
+                    @endif
 
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </body>
 </html>

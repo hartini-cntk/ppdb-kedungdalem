@@ -208,7 +208,7 @@
 
         <!-- Tombol -->
         <div class="buttons">
-            <button onclick="window.print()" class="btn btn-danger">
+            <button onclick="window.print()" class="btn btn-primary">
                 🖨 Cetak Bukti Pendaftaran
             </button>
 

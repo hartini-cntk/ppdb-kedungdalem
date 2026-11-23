@@ -12,7 +12,7 @@
 <body class="bg-light">
 
     <!-- Navbar -->
-    <nav class="navbar bg-danger">
+    <nav class="navbar bg-primary">
         <div class="container">
 
             <a href="/admin/dashboard"
@@ -159,7 +159,7 @@
 
                                     <button
                                         type="submit"
-                                        class="btn btn-sm btn-danger"
+                                        class="btn btn-sm btn-primary"
                                     >
                                         Tolak
                                     </button>

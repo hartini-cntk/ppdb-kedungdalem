@@ -18,11 +18,11 @@
     <nav class="navbar navbar-expand-lg bg-white shadow-sm">
         <div class="container">
 
-            <a class="navbar-brand fw-bold text-danger" href="/dashboard">
+            <a class="navbar-brand fw-bold text-primary" href="/dashboard">
                 PPDB SDN Kedung Dalam 1
             </a>
 
-            <a href="/dashboard" class="btn btn-outline-danger btn-sm">
+            <a href="/dashboard" class="btn btn-outline-primary btn-sm">
                 Kembali
             </a>
 

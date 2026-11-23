@@ -6,7 +6,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <title>Detail Pendaftar - PPDB SDN Kedung Dalam 1</title>
+    <title>Detail Pendaftar - PPDB SDN Kedung Dalem 1</title>
 
     <style>
         body {
@@ -15,7 +15,7 @@
         }
 
         .topbar {
-            background: #c62828;
+            background: #103765;
         }
 
         .page-title {
@@ -53,12 +53,12 @@
         }
 
         .tab-button:hover {
-            background: #fff0f0;
-            color: #c62828;
+            background: #eaf4ff;
+            color: #103765;
         }
 
         .tab-button.active {
-            background: #c62828;
+            background: #103765;
             color: #fff;
         }
 
@@ -99,7 +99,7 @@
         }
 
         .subheading {
-            color: #c62828;
+            color: #103765;
             font-size: 1rem;
             font-weight: 700;
             margin-bottom: 12px;
@@ -115,10 +115,24 @@
         }
 
         .status-box {
-            background: #fffafa;
-            border: 1px solid #f0dddd;
+            background: #f8fbff;
+            border: 1px solid #d7e7f8;
             border-radius: 12px;
             padding: 20px;
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: .55;
+        }
+
+        .checklist-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: 0;
         }
 
         @media (max-width: 576px) {
@@ -136,10 +150,56 @@
 
 <body>
 
+@php
+    // Tiga dokumen yang wajib diterima admin
+    $jenisBerkasWajib = [
+        'Kartu Keluarga',
+        'Akta Kelahiran',
+        'KTP Ibu',
+    ];
+
+    // Mengambil berkas milik pendaftar ini
+    $berkasPendaftar = $pendaftaran->berkas;
+
+    // Menghitung berkas yang masih menunggu verifikasi
+    $jumlahBerkasMenunggu = $berkasPendaftar
+        ->where('status', 'Menunggu Verifikasi')
+        ->count();
+
+    // Memastikan semua dokumen wajib sudah diterima
+    $semuaBerkasDiterima = collect($jenisBerkasWajib)->every(
+        function ($jenis) use ($berkasPendaftar) {
+            return $berkasPendaftar->contains(function ($item) use ($jenis) {
+                return $item->jenis_berkas === $jenis
+                    && $item->status === 'Diterima';
+            });
+        }
+    );
+
+    // Memeriksa apakah masih ada catatan perbaikan
+    $catatanMasihAda = trim((string) $pendaftaran->catatan_admin) !== '';
+
+    // Pendaftaran harus sudah diperiksa data pribadinya oleh admin
+    $pendaftaranSudahDiverifikasi =
+        $pendaftaran->status === 'Terverifikasi';
+
+    // Syarat untuk menetapkan siswa Lulus
+    $bolehDinyatakanLulus =
+        $pendaftaranSudahDiverifikasi
+        && $semuaBerkasDiterima
+        && !$catatanMasihAda;
+
+    // Hasil seleksi sudah ditetapkan
+    $hasilSeleksiSudahDitetapkan = in_array(
+        $pendaftaran->status,
+        ['Lulus', 'Tidak Lulus']
+    );
+@endphp
+
 <nav class="navbar topbar">
     <div class="container">
         <a href="/admin/dashboard" class="navbar-brand text-white fw-bold">
-            SDN Kedung Dalam 1
+            SDN Kedung Dalem 1
         </a>
 
         <a href="/admin/pendaftar" class="btn btn-light btn-sm">
@@ -157,6 +217,13 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     @if ($errors->any())
         <div class="alert alert-danger">
             {{ $errors->first() }}
@@ -165,7 +232,7 @@
 
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
-            <p class="text-danger fw-semibold small mb-1">ADMINISTRATOR / DATA PENDAFTAR</p>
+            <p class="text-primary fw-semibold small mb-1">ADMINISTRATOR / DATA PENDAFTAR</p>
             <h1 class="page-title h2 mb-2">Detail Pendaftar</h1>
             <p class="text-secondary mb-0">
                 Informasi lengkap calon siswa dan proses seleksi PPDB.
@@ -177,8 +244,9 @@
         </span>
     </div>
 
-    <!-- Menu Tab -->
+    <!-- MENU TAB -->
     <div class="tab-menu" role="tablist" aria-label="Detail pendaftar">
+
         <button type="button" class="tab-button active"
             id="btn-siswa" role="tab" aria-selected="true"
             aria-controls="tab-siswa" onclick="bukaTab('siswa')">
@@ -202,6 +270,7 @@
             aria-controls="tab-berkas" onclick="bukaTab('berkas')">
             Berkas & Status
         </button>
+
     </div>
 
     <!-- TAB 1: DATA SISWA -->
@@ -247,6 +316,7 @@
             <span class="info-label">Asal Sekolah</span>
             <span class="info-value">{{ $pendaftaran->asal_sekolah }}</span>
         </div>
+
     </section>
 
     <!-- TAB 2: ALAMAT -->
@@ -284,6 +354,7 @@
             <span class="info-label">Provinsi</span>
             <span class="info-value">{{ $pendaftaran->provinsi }}</span>
         </div>
+
     </section>
 
     <!-- TAB 3: DATA ORANG TUA -->
@@ -293,6 +364,7 @@
         <h2 class="section-title">Data Orang Tua/Wali</h2>
 
         <div class="row g-4">
+
             <div class="col-12 col-lg-6">
                 <h3 class="subheading">Data Ayah</h3>
 
@@ -357,14 +429,14 @@
                     <span class="info-value">{{ $pendaftaran->no_hp }}</span>
                 </div>
 
-<div class="info-row">
-    <span class="info-label">Email Orang Tua/Wali</span>
-    <span class="info-value">
-        {{ $pendaftaran->email_orang_tua ?? '-' }}
-    </span>
-</div>
-
+                <div class="info-row">
+                    <span class="info-label">Email Orang Tua/Wali</span>
+                    <span class="info-value">
+                        {{ $pendaftaran->email_orang_tua ?? '-' }}
+                    </span>
+                </div>
             </div>
+
         </div>
     </section>
 
@@ -372,121 +444,360 @@
     <section id="tab-berkas" class="tab-content"
         role="tabpanel" aria-labelledby="btn-berkas">
 
+        <!-- BERKAS PENDAFTAR -->
         <div class="detail-card p-3 p-md-4 mb-4">
+
             <h2 class="section-title">Berkas Pendaftar</h2>
 
-            @forelse ($pendaftaran->berkas as $berkas)
+            <!-- TOMBOL TERIMA SEMUA BERKAS -->
+            @if ($jumlahBerkasMenunggu > 0 && !$hasilSeleksiSudahDitetapkan)
+
+                <div class="alert alert-info d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+                    <div>
+                        <strong>
+                            {{ $jumlahBerkasMenunggu }} berkas menunggu verifikasi.
+                        </strong>
+
+                        <p class="small mb-0">
+                            Tombol ini akan menerima semua berkas yang masih menunggu verifikasi untuk siswa ini.
+                        </p>
+                    </div>
+
+                    <form method="POST"
+                        action="/admin/pendaftar/{{ $pendaftaran->id }}/terima-semua-berkas"
+                        onsubmit="return confirm('Yakin ingin menerima semua berkas yang masih menunggu verifikasi untuk siswa ini?')">
+
+                        @csrf
+
+                        <button type="submit" class="btn btn-success text-nowrap">
+                            Terima Semua Berkas
+                        </button>
+
+                    </form>
+
+                </div>
+
+            @endif
+
+            @forelse ($berkasPendaftar as $berkas)
+
                 <div class="document-row">
+
                     <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+
                         <div>
-                            <p class="fw-bold mb-2">{{ $berkas->jenis_berkas }}</p>
+                            <p class="fw-bold mb-2">
+                                {{ $berkas->jenis_berkas }}
+                            </p>
 
                             <span class="text-secondary small">Status: </span>
 
                             @if ($berkas->status === 'Diterima')
                                 <span class="badge text-bg-success">Diterima</span>
                             @elseif ($berkas->status === 'Ditolak')
-                                <span class="badge text-bg-danger">Ditolak</span>
+                                <span class="badge text-bg-primary">Ditolak</span>
                             @else
-                                <span class="badge text-bg-warning">{{ $berkas->status }}</span>
+                                <span class="badge text-bg-warning">
+                                    {{ $berkas->status }}
+                                </span>
                             @endif
                         </div>
 
                         <div class="d-flex flex-wrap gap-2 align-items-start">
+
                             <a href="{{ asset('storage/' . $berkas->nama_file) }}"
                                 target="_blank" rel="noopener noreferrer"
-                                class="btn btn-sm btn-outline-danger">
+                                class="btn btn-sm btn-outline-primary">
                                 Lihat Berkas
                             </a>
 
                             @if ($berkas->status === 'Diterima')
-                                <span class="badge text-bg-success py-2 px-3">Sudah Diterima</span>
-                            @elseif ($berkas->status === 'Ditolak')
-                                <span class="badge text-bg-danger py-2 px-3">Sudah Ditolak</span>
-                            @else
-                                <form method="POST"
-    action="/admin/berkas/{{ $berkas->id_berkas }}/terima">
-    @csrf
-    <button type="submit" class="btn btn-sm btn-success">
-        Terima
-    </button>
-</form>
 
-<form method="POST"
-    action="/admin/berkas/{{ $berkas->id_berkas }}/tolak">
-    @csrf
-    <button type="submit" class="btn btn-sm btn-danger">
-        Tolak
-    </button>
-</form>
+                                <span class="badge text-bg-success py-2 px-3">
+                                    Sudah Diterima
+                                </span>
+
+                            @elseif ($berkas->status === 'Ditolak')
+
+                                <span class="badge text-bg-primary py-2 px-3">
+                                    Sudah Ditolak
+                                </span>
+
+                            @else
+
+                                <form method="POST"
+                                    action="/admin/berkas/{{ $berkas->id_berkas }}/terima">
+                                    @csrf
+
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        Terima
+                                    </button>
+                                </form>
+
+                                <form method="POST"
+                                    action="/admin/berkas/{{ $berkas->id_berkas }}/tolak">
+                                    @csrf
+
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        Tolak
+                                    </button>
+                                </form>
+
                             @endif
+
                         </div>
                     </div>
                 </div>
+
             @empty
+
                 <p class="text-secondary mb-0">
                     Belum ada berkas yang diunggah oleh pendaftar.
                 </p>
+
             @endforelse
+
         </div>
 
+        <!-- CATATAN PERBAIKAN -->
+        <div class="detail-card p-3 p-md-4 mb-4">
+
+            <h2 class="section-title">Catatan Perbaikan untuk Siswa</h2>
+
+            <p class="text-secondary small">
+                Berikan catatan jika terdapat data yang salah,
+                berkas yang kurang, atau hal yang perlu diperbaiki siswa.
+            </p>
+
+            <form method="POST"
+                action="/admin/pendaftar/{{ $pendaftaran->id }}/catatan">
+
+                @csrf
+
+                <div class="mb-3">
+                    <label for="catatan_admin" class="form-label fw-semibold">
+                        Catatan Admin
+                    </label>
+
+                    <textarea
+                        name="catatan_admin"
+                        id="catatan_admin"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Contoh: Mohon unggah ulang foto Akta Kelahiran yang lebih jelas."
+                    >{{ old('catatan_admin', $pendaftaran->catatan_admin) }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Simpan Catatan
+                </button>
+
+            </form>
+
+            @if (!empty($pendaftaran->catatan_admin))
+
+                <form method="POST"
+                    action="/admin/pendaftar/{{ $pendaftaran->id }}/catatan"
+                    class="mt-2"
+                    onsubmit="return confirm('Yakin ingin menghapus catatan perbaikan ini?')">
+
+                    @csrf
+                    @method('DELETE')
+
+                    <button type="submit" class="btn btn-outline-primary">
+                        Hapus Catatan
+                    </button>
+
+                </form>
+
+            @endif
+
+        </div>
+
+        <!-- STATUS PENDAFTARAN -->
         <div class="detail-card p-3 p-md-4">
+
             <h2 class="section-title">Status Pendaftaran</h2>
 
             <div class="status-box mb-4">
+
                 <p class="text-secondary mb-2">Status saat ini</p>
 
-                
-<h3 class="h5 fw-bold mb-0">
-    @if ($pendaftaran->status === 'Lulus')
-        <span class="badge text-bg-success">Lulus</span>
-    @elseif ($pendaftaran->status === 'Tidak Lulus')
-        <span class="badge text-bg-danger">Tidak Lulus</span>
-    @elseif ($pendaftaran->status === 'Terverifikasi')
-        <span class="badge text-bg-primary">Terverifikasi</span>
-    @else
-        <span class="badge text-bg-warning">
-            {{ $pendaftaran->status }}
-        </span>
-    @endif
-</h3>
+                <h3 class="h5 fw-bold mb-0">
+
+                    @if ($pendaftaran->status === 'Lulus')
+
+                        <span class="badge text-bg-success">Lulus</span>
+
+                    @elseif ($pendaftaran->status === 'Tidak Lulus')
+
+                        <span class="badge text-bg-primary">Tidak Lulus</span>
+
+                    @elseif ($pendaftaran->status === 'Terverifikasi')
+
+                        <span class="badge text-bg-primary">Terverifikasi</span>
+
+                    @else
+
+                        <span class="badge text-bg-warning">
+                            {{ $pendaftaran->status }}
+                        </span>
+
+                    @endif
+
+                </h3>
 
             </div>
 
-            <div class="d-flex flex-wrap gap-2">
-                @if ($pendaftaran->status !== 'Terverifikasi'
-                    && $pendaftaran->status !== 'Lulus'
-                    && $pendaftaran->status !== 'Tidak Lulus')
-                    <form method="POST"
-                        action="/admin/pendaftar/{{ $pendaftaran->id }}/verifikasi">
-                        @csrf
-                        <button type="submit" class="btn btn-primary">
-                            Verifikasi Pendaftaran
-                        </button>
-                    </form>
-                @endif
+            <!-- CHECKLIST PERSYARATAN SELEKSI -->
+            <div class="border rounded-3 p-3 mb-4">
 
-                
-                @if ($pendaftaran->status !== 'Lulus' && $pendaftaran->status !== 'Tidak Lulus')
+                <h3 class="h6 fw-bold mb-3">
+                    Pemeriksaan Sebelum Menetapkan Hasil
+                </h3>
+
+                <div class="checklist-item d-flex justify-content-between align-items-center gap-2">
+                    <span>Data pendaftaran sudah diperiksa</span>
+
+                    @if ($pendaftaranSudahDiverifikasi)
+                        <span class="badge text-bg-success">Selesai</span>
+                    @else
+                        <span class="badge text-bg-warning">Belum</span>
+                    @endif
+                </div>
+
+                @foreach ($jenisBerkasWajib as $jenis)
+
+                    @php
+                        $berkasJenisDiterima = $berkasPendaftar->contains(function ($item) use ($jenis) {
+                            return $item->jenis_berkas === $jenis
+                                && $item->status === 'Diterima';
+                        });
+                    @endphp
+
+                    <div class="checklist-item d-flex justify-content-between align-items-center gap-2">
+
+                        <span>{{ $jenis }}</span>
+
+                        @if ($berkasJenisDiterima)
+                            <span class="badge text-bg-success">Diterima</span>
+                        @else
+                            <span class="badge text-bg-primary">Belum diterima</span>
+                        @endif
+
+                    </div>
+
+                @endforeach
+
+                <div class="checklist-item d-flex justify-content-between align-items-center gap-2">
+
+                    <span>Catatan perbaikan sudah diselesaikan</span>
+
+                    @if (!$catatanMasihAda)
+                        <span class="badge text-bg-success">Selesai</span>
+                    @else
+                        <span class="badge text-bg-primary">Masih ada catatan</span>
+                    @endif
+
+                </div>
+
+            </div>
+
+            @if (!$hasilSeleksiSudahDitetapkan)
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <!-- TOMBOL VERIFIKASI PENDAFTARAN -->
+                    @if (!$pendaftaranSudahDiverifikasi)
+
+                        <form method="POST"
+                            action="/admin/pendaftar/{{ $pendaftaran->id }}/verifikasi">
+
+                            @csrf
+
+                            <button type="submit" class="btn btn-primary">
+                                Verifikasi Pendaftaran
+                            </button>
+
+                        </form>
+
+                    @endif
+
+                    <!-- TOMBOL LULUS -->
                     <form method="POST"
                         action="/admin/pendaftar/{{ $pendaftaran->id }}/lulus">
+
                         @csrf
-                        <button type="submit" class="btn btn-success">
+
+                        <button type="submit"
+                            class="btn btn-success"
+                            @disabled(!$bolehDinyatakanLulus)
+                            title="{{ !$bolehDinyatakanLulus ? 'Selesaikan semua persyaratan terlebih dahulu.' : 'Tetapkan siswa sebagai Lulus.' }}">
+
                             Lulus
+
                         </button>
+
                     </form>
 
+                    <!-- TOMBOL TIDAK LULUS -->
                     <form method="POST"
-                        action="/admin/pendaftar/{{ $pendaftaran->id }}/tidak-lulus">
+                        action="/admin/pendaftar/{{ $pendaftaran->id }}/tidak-lulus"
+                        onsubmit="return confirm('Apakah kamu yakin ingin menetapkan pendaftar ini sebagai TIDAK LULUS? Pastikan data pendaftaran sudah diperiksa.')">
+
                         @csrf
-                        <button type="submit" class="btn btn-danger">
+
+                        <button type="submit"
+                            class="btn btn-primary"
+                            @disabled(!$pendaftaranSudahDiverifikasi)
+                            title="{{ !$pendaftaranSudahDiverifikasi ? 'Verifikasi pendaftaran terlebih dahulu.' : 'Tetapkan siswa sebagai Tidak Lulus.' }}">
+
                             Tidak Lulus
+
                         </button>
+
                     </form>
+
+                </div>
+
+                @if (!$bolehDinyatakanLulus)
+
+                    <div class="alert alert-warning mt-3 mb-0">
+
+                        <strong>Tombol Lulus belum dapat digunakan.</strong>
+
+                        <p class="mb-0 mt-1 small">
+                            Pastikan data pendaftaran sudah diverifikasi,
+                            seluruh berkas wajib sudah diterima, dan tidak ada
+                            catatan perbaikan yang masih aktif.
+                        </p>
+
+                    </div>
+
                 @endif
 
-            </div>
+                @if (!$pendaftaranSudahDiverifikasi)
+
+                    <div class="alert alert-info mt-3 mb-0">
+                        Admin harus memeriksa data siswa, alamat, dan data orang tua
+                        terlebih dahulu, kemudian menekan tombol
+                        <strong>Verifikasi Pendaftaran</strong>.
+                    </div>
+
+                @endif
+
+            @else
+
+                <div class="alert alert-info mb-0">
+                    Hasil seleksi sudah ditetapkan.
+                    Tombol perubahan hasil seleksi tidak lagi ditampilkan.
+                </div>
+
+            @endif
+
         </div>
+
     </section>
 
 </main>
@@ -505,6 +816,7 @@
         document.getElementById('tab-' + nama).classList.add('active');
 
         const tombolAktif = document.getElementById('btn-' + nama);
+
         tombolAktif.classList.add('active');
         tombolAktif.setAttribute('aria-selected', 'true');
     }

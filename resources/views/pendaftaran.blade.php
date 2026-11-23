@@ -13,7 +13,7 @@
 <body class="bg-light">
 
     <!-- Navbar -->
-    <nav class="navbar bg-danger">
+    <nav class="navbar bg-primary">
         <div class="container">
             <a href="/dashboard" class="navbar-brand text-white fw-bold">
                 SDN Kedung Dalem 1
@@ -650,12 +650,12 @@
                         <!-- Tombol -->
                         <div class="d-flex justify-content-between align-items-center">
 
-                            <a href="/dashboard" class="btn btn-outline-danger">
+                            <a href="/dashboard" class="btn btn-outline-primary">
                                 Kembali
                             </a>
 
                             @if (!$formulirTerkunci)
-                                <button type="submit" class="btn btn-danger px-4">
+                                <button type="submit" class="btn btn-primary px-4">
                                     Simpan & Lanjutkan
                                 </button>
                             @endif

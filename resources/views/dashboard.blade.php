@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -11,13 +10,14 @@
 
     <style>
         body {
-            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 55%);
+            background: linear-gradient(135deg, #f1f7ff 0%, #ffffff 55%);
             min-height: 100vh;
             color: #212529;
         }
 
         .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            background: #103765 !important;
+            box-shadow: 0 2px 10px rgba(16, 55, 101, 0.16);
         }
 
         .dashboard-wrapper {
@@ -81,19 +81,19 @@
             border-radius: 9px;
             font-weight: 600;
             padding: 9px 18px;
-            border: 1px solid #dc3545;
-            color: #dc3545;
+            border: 1px solid #1769c2;
+            color: #1769c2;
             background: #ffffff;
             transition: all 0.2s ease;
         }
 
         .btn-menu:hover {
-            background: #dc3545;
+            background: #1769c2;
             color: #ffffff;
         }
 
         .status-label {
-            color: #dc3545;
+            color: #1769c2;
             font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.8px;
@@ -104,7 +104,7 @@
             background: #ffffff;
             border-radius: 18px;
             padding: 28px 24px;
-            border: 1px solid #f1f1f1;
+            border: 1px solid #e2edfa;
             box-shadow: 0 6px 22px rgba(0, 0, 0, 0.05);
         }
 
@@ -130,10 +130,10 @@
         }
 
         .step-active {
-            background: #dc3545;
+            background: #1769c2;
             color: #ffffff;
-            border-color: #dc3545;
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.20);
+            border-color: #1769c2;
+            box-shadow: 0 4px 12px rgba(23, 105, 194, 0.20);
         }
 
         .step-title {
@@ -153,7 +153,7 @@
         }
 
         .step-line-active {
-            background: #dc3545;
+            background: #1769c2;
         }
 
         .daftar-ulang-card {
@@ -182,6 +182,13 @@
             font-weight: 600;
             margin-bottom: 0;
             white-space: pre-line;
+        }
+
+        .catatan-admin-card {
+            border: none;
+            border-left: 5px solid #1769c2;
+            border-radius: 16px;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
         }
 
         @media (max-width: 576px) {
@@ -222,12 +229,10 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar bg-danger py-3">
+    <nav class="navbar bg-primary py-3">
         <div class="container">
 
-            <a href="/" class="navbar-brand text-white fw-bold">
-                SDN Kedung Dalem 1
-            </a>
+            <a href="/" class="navbar-brand text-white fw-bold d-flex align-items-center gap-2"><img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo SDN Kedung Dalam 1" style="width:38px;height:38px;object-fit:contain;"><span>SDN Kedung Dalem 1</span></a>
 
             <form method="POST" action="/logout">
                 @csrf
@@ -364,6 +369,51 @@
             </div>
 
         </div>
+
+
+        <!-- CATATAN PERBAIKAN DARI ADMIN -->
+        @if ($pendaftaran && !empty($pendaftaran->catatan_admin))
+
+            <div class="card catatan-admin-card mb-4">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+
+                        <span style="font-size: 25px;">📝</span>
+
+                        <div>
+                            <p class="status-label mb-1">
+                                INFORMASI DARI ADMIN
+                            </p>
+
+                            <h5 class="fw-bold mb-0">
+                                Catatan Perbaikan
+                            </h5>
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-warning mb-0">
+
+                        <p class="fw-semibold mb-2">
+                            Mohon perhatikan catatan berikut:
+                        </p>
+
+                        <p class="mb-0" style="white-space: pre-line;">{{ $pendaftaran->catatan_admin }}</p>
+
+                    </div>
+
+                    <p class="text-secondary small mt-3 mb-0">
+                        Silakan perbaiki data atau berkas sesuai arahan admin.
+                        Jika diperlukan, kamu dapat menghubungi pihak sekolah.
+                    </p>
+
+                </div>
+
+            </div>
+
+        @endif
 
 
         <!-- INFORMASI DAFTAR ULANG -->
@@ -686,7 +736,7 @@
 
                                 <div class="mt-3">
                                     <a href="/upload-berkas" class="btn btn-menu">
-                                        Lihat / Edit Berkas
+                                     Edit Berkas
                                     </a>
                                 </div>
 
@@ -713,7 +763,7 @@
 
 
             <!-- Bukti Pendaftaran -->
-            @if ($sudahUploadBerkas)
+@if ($pendaftaran && $pendaftaran->status === 'Lulus' && $berkasSudahDiverifikasi)
 
                 <div class="col-md-6">
 
@@ -766,12 +816,16 @@
                             dan keputusan seleksi PPDB kamu.
                         </p>
 
-                        <a
-                            href="/status-pendaftaran"
-                            class="btn btn-menu"
-                        >
-                            Cek Status
-                        </a>
+                        @if ($sudahIsiFormulir)
+                            <a href="/status-pendaftaran" class="btn btn-menu">
+                                Cek Status
+                            </a>
+                        @else
+                            <button type="button" class="btn btn-menu" disabled
+                                    title="Isi formulir pendaftaran terlebih dahulu.">
+                                Cek Status
+                            </button>
+                        @endif
 
                     </div>
 

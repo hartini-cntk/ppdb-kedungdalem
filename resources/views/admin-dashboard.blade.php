@@ -13,11 +13,11 @@
             margin: 0;
             background: #f6f7f9;
             color: #252b36;
-            font-family: Arial, sans-serif;
+            font-family: Segoe UI, Tahoma, system-ui, sans-serif;
         }
 
         .navbar {
-            background: #dc3545;
+            background: #103765;
             padding: 12px 28px;
             display: flex;
             align-items: center;
@@ -39,7 +39,7 @@
 
         .logout {
             background: white;
-            color: #dc3545;
+            color: #1769c2;
             border: 0;
             border-radius: 7px;
             padding: 10px 16px;
@@ -49,6 +49,10 @@
         .layout { display: flex; min-height: calc(100vh - 68px); }
 
         .sidebar {
+            position: sticky;
+            top: 0;
+            height: calc(100vh - 68px);
+            overflow-y: auto;
             width: 240px;
             flex-shrink: 0;
             background: white;
@@ -76,7 +80,7 @@
 
         .sidebar a:hover,
         .sidebar a.active {
-            background: #dc3545;
+            background: #1769c2;
             color: white;
         }
 
@@ -100,7 +104,7 @@
         .stat {
             background: white;
             border: 1px solid #e7e9ee;
-            border-top: 4px solid #dc3545;
+            border-top: 4px solid #1769c2;
             border-radius: 12px;
             padding: 20px 16px;
             box-shadow: 0 2px 6px #17203308;
@@ -150,7 +154,7 @@
             margin: 14px 0;
         }
 
-        .progress-fill { height: 100%; background: #dc3545; border-radius: 20px; }
+        .progress-fill { height: 100%; background: #1769c2; border-radius: 20px; }
 
         .quota-foot {
             display: flex;
@@ -188,7 +192,7 @@
             border: 1px solid #d9dde5;
             border-radius: 7px;
             font-size: 14px;
-            font-family: Arial, sans-serif;
+            font-family: Segoe UI, Tahoma, system-ui, sans-serif;
         }
 
         textarea.form-input {
@@ -198,7 +202,7 @@
         }
 
         .primary-button {
-            background: #dc3545;
+            background: #1769c2;
             color: white;
             border: 0;
             border-radius: 7px;
@@ -207,7 +211,7 @@
             font-weight: bold;
         }
 
-        .primary-button:hover { background: #bb2d3b; }
+        .primary-button:hover { background: #103765; }
 
         .alert-success, .alert-error {
             padding: 12px;
@@ -287,7 +291,10 @@
     <div class="layout">
         <aside class="sidebar">
             <p class="sidebar-title">MENU UTAMA</p>
-            <a href="/admin/dashboard" class="active">Dashboard</a>
+            <a href="#ringkasan" class="admin-menu active" data-target="ringkasan">Dashboard</a>
+            <a href="#kuota" class="admin-menu" data-target="kuota">Pengaturan Kuota</a>
+            <a href="#jadwal" class="admin-menu" data-target="jadwal">Jadwal Pendaftaran</a>
+            <a href="#daftar-ulang" class="admin-menu" data-target="daftar-ulang">Informasi Daftar Ulang</a>
             <a href="/admin/pendaftar">Data Pendaftar</a>
         </aside>
 
@@ -301,7 +308,7 @@
 
             <h2 class="section-title">Ringkasan Pendaftaran</h2>
 
-            <div class="stats">
+            <div class="stats" data-summary-stats>
                 <div class="stat">
                     <p class="stat-label">Total Pendaftar</p>
                     <p class="stat-number">{{ $totalPendaftar }}</p>
@@ -325,7 +332,7 @@
             </div>
 
             <!-- PROGRES KUOTA -->
-            <section class="panel">
+            <section class="panel menu-panel" id="progress-kuota" data-menu-panel="ringkasan kuota">
                 <h2 class="section-title">Progres Kuota PPDB</h2>
                 <p class="panel-description">
                     Pantau jumlah pendaftar dibandingkan dengan kuota maksimal yang ditentukan.
@@ -355,7 +362,7 @@
             </section>
 
             <!-- PENGATURAN KUOTA -->
-            <section class="panel">
+            <section class="panel menu-panel" id="kuota" data-menu-panel="kuota">
                 <h2 class="section-title">Pengaturan Kuota PPDB</h2>
                 <p class="panel-description">
                     Atur jumlah maksimal peserta yang dapat mendaftar.
@@ -384,7 +391,7 @@
             </section>
 
             <!-- PENGATURAN JADWAL -->
-            <section class="panel">
+            <section class="panel menu-panel" id="jadwal" data-menu-panel="jadwal">
                 <h2 class="section-title">Pengaturan Jadwal Pendaftaran</h2>
 
                 <p class="panel-description">
@@ -429,7 +436,7 @@
             </section>
 
             <!-- PENGATURAN DAFTAR ULANG -->
-            <section class="panel">
+            <section class="panel menu-panel" id="daftar-ulang" data-menu-panel="daftar-ulang">
                 <h2 class="section-title">Informasi Daftar Ulang</h2>
 
                 <p class="panel-description">
@@ -518,7 +525,7 @@
             </section>
 
             <!-- PENDAFTAR TERBARU -->
-            <section class="panel">
+            <section class="panel menu-panel" id="terbaru" data-menu-panel="ringkasan">
                 <h2 class="section-title">Pendaftar Terbaru</h2>
                 <p class="panel-description">
                     Lima pendaftaran terbaru yang tercatat di sistem.
@@ -561,5 +568,26 @@
             </section>
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menus = document.querySelectorAll('.admin-menu');
+            const panels = document.querySelectorAll('[data-menu-panel]');
+            const summaryStats = document.querySelector('[data-summary-stats]');
+            const showPanel = (target) => {
+                panels.forEach(panel => panel.hidden = !panel.dataset.menuPanel.split(" ").includes(target));
+                if (summaryStats) summaryStats.hidden = target !== 'ringkasan';
+                menus.forEach(menu => menu.classList.toggle('active', menu.dataset.target === target));
+            };
+            menus.forEach(menu => menu.addEventListener('click', event => {
+                event.preventDefault();
+                const target = menu.dataset.target;
+                showPanel(target);
+                history.replaceState(null, '', `#${target}`);
+            }));
+            const initial = location.hash.slice(1);
+            showPanel([...panels].some(panel => panel.dataset.menuPanel.split(' ').includes(initial)) ? initial : 'ringkasan');
+        });
+    </script>
 </body>
 </html>

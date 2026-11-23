@@ -49,8 +49,9 @@ class Pendaftaran extends Model
 'no_hp',
 'email_orang_tua',
 
-        // Status
+         // Status
         'status',
+        'catatan_admin',
     ];
 
     public function berkas()

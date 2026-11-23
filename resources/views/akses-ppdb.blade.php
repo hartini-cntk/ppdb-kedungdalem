@@ -12,14 +12,15 @@
         body {
             background: linear-gradient(
                 135deg,
-                #fff5f5 0%,
+                #f1f7ff 0%,
                 #ffffff 55%
             );
             min-height: 100vh;
         }
 
         .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            background: #103765 !important;
+            box-shadow: 0 2px 10px rgba(16, 55, 101, 0.16);
         }
 
         .access-wrapper {
@@ -34,9 +35,9 @@
         }
 
         .access-header {
-            background: #fff8f8;
+            background: #f2f8ff;
             padding: 30px 20px 25px;
-            border-bottom: 1px solid #f1f1f1;
+            border-bottom: 1px solid #e2edfa;
         }
 
         .access-logo {
@@ -47,7 +48,7 @@
         }
 
         .access-label {
-            color: #dc3545;
+            color: #1769c2;
             font-size: 13px;
             font-weight: 700;
             letter-spacing: 0.5px;
@@ -68,27 +69,27 @@
         }
 
         .login-btn {
-            background: #dc3545;
-            border-color: #dc3545;
+            background: #1769c2;
+            border-color: #1769c2;
         }
 
         .login-btn:hover {
-            background: #bb2d3b;
-            border-color: #bb2d3b;
+            background: #103765;
+            border-color: #103765;
         }
 
         .register-btn {
-            border: 1px solid #dc3545;
-            color: #dc3545;
+            border: 1px solid #1769c2;
+            color: #1769c2;
         }
 
         .register-btn:hover {
-            background: #dc3545;
+            background: #1769c2;
             color: #ffffff;
         }
 
         .access-note {
-            background: #f8f9fa;
+            background: #f3f8ff;
             border-radius: 10px;
             padding: 12px 15px;
             font-size: 14px;
@@ -99,13 +100,11 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar bg-danger py-3">
+    <nav class="navbar bg-primary py-3">
 
         <div class="container">
 
-            <a href="/" class="navbar-brand text-white fw-bold">
-                SDN Kedung Dalam 1
-            </a>
+            <a href="/" class="navbar-brand text-white fw-bold d-flex align-items-center gap-2"><img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo SDN Kedung Dalam 1" style="width:38px;height:38px;object-fit:contain;"><span>SDN Kedung Dalam 1</span></a>
 
             <a href="/" class="btn btn-light px-4">
                 Beranda
@@ -157,7 +156,7 @@
 
                             <a
                                 href="/login"
-                                class="btn btn-danger access-btn login-btn"
+                                class="btn btn-primary access-btn login-btn"
                             >
                                 Login
                             </a>

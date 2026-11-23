@@ -28,7 +28,7 @@ class PengaturanPpdbController extends Controller
             'kuota' => $request->kuota,
         ]);
 
-        return redirect('/admin/dashboard')->with(
+        return redirect('/admin/dashboard#kuota')->with(
             'success',
             'Kuota PPDB berhasil diperbarui.'
         );
@@ -49,7 +49,7 @@ class PengaturanPpdbController extends Controller
             'tanggal_tutup' => $request->tanggal_tutup,
         ]);
 
-        return redirect('/admin/dashboard')->with(
+        return redirect('/admin/dashboard#jadwal')->with(
             'success_jadwal',
             'Jadwal PPDB berhasil diperbarui.'
         );
@@ -74,7 +74,7 @@ class PengaturanPpdbController extends Controller
             'persyaratan_daftar_ulang' => $request->persyaratan_daftar_ulang,
         ]);
 
-        return redirect('/admin/dashboard')->with(
+        return redirect('/admin/dashboard#daftar-ulang')->with(
             'success_daftar_ulang',
             'Informasi daftar ulang berhasil diperbarui.'
         );

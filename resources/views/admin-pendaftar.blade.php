@@ -14,7 +14,7 @@
         }
 
         .page-header {
-            background: #dc3545;
+            background: #1769c2;
             color: white;
             padding: 18px 0;
         }
@@ -42,12 +42,12 @@
         }
 
         .table thead th {
-            background: #fff0f1;
-            color: #8e2330;
+            background: #eaf4ff;
+            color: #103765;
             font-size: 13px;
             white-space: nowrap;
             padding: 14px 12px;
-            border-bottom: 1px solid #f1d5d8;
+            border-bottom: 1px solid #d7e7f8;
         }
 
         .table tbody td {
@@ -56,7 +56,7 @@
         }
 
         .table tbody tr:hover {
-            background: #fffafa;
+            background: #f4f9ff;
         }
 
         .status-badge {
@@ -75,7 +75,7 @@
 
         .status-ditolak {
             background: #f8d7da;
-            color: #b02a37;
+            color: #103765;
         }
 
         .status-terverifikasi {
@@ -89,7 +89,7 @@
         }
 
         .detail-button {
-            background: #dc3545;
+            background: #1769c2;
             color: white;
             border-radius: 7px;
             padding: 7px 12px;
@@ -99,7 +99,7 @@
         }
 
         .detail-button:hover {
-            background: #bb2d3b;
+            background: #103765;
             color: white;
         }
 
@@ -112,24 +112,56 @@
                 padding: 14px !important;
             }
         }
+
+        .admin-navbar {
+            background: #103765;
+            color: white;
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .admin-navbar a { color: white; text-decoration: none; font-weight: 700; }
+        .admin-layout { display: flex; min-height: calc(100vh - 68px); }
+        .admin-sidebar {
+            position: sticky; top: 0; align-self: flex-start;
+            width: 240px; height: calc(100vh - 68px); overflow-y: auto;
+            flex-shrink: 0; padding: 30px 16px; background: white;
+            border-right: 1px solid #e5e7eb;
+        }
+        .admin-sidebar-title { margin: 0 12px 20px; color: #969ba5; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+        .admin-sidebar a { display: block; padding: 13px 15px; margin-bottom: 9px; border-radius: 8px; color: #555d6b; text-decoration: none; font-size: 14px; }
+        .admin-sidebar a:hover, .admin-sidebar a.active { background: #1769c2; color: white; }
+        .admin-content { flex: 1; min-width: 0; }
+        @media (max-width: 768px) {
+            .admin-layout { display: block; }
+            .admin-sidebar { position: sticky; z-index: 5; width: 100%; height: auto; padding: 14px 16px; border-right: 0; border-bottom: 1px solid #e5e7eb; }
+            .admin-sidebar-title { margin-bottom: 8px; }
+            .admin-sidebar a { display: inline-block; margin: 0 4px 4px 0; padding: 9px 12px; }
+        }
     </style>
 </head>
 
 <body>
-    <nav class="page-header">
-        <div class="container d-flex justify-content-between align-items-center gap-3">
-            <a href="/admin/dashboard"
-               class="navbar-brand text-white fw-bold mb-0">
-                SDN Kedung Dalam 1
-            </a>
-
-            <a href="/admin/dashboard" class="btn btn-light btn-sm">
-                Kembali
-            </a>
-        </div>
+    <nav class="admin-navbar">
+        <a href="/admin/dashboard">SDN Kedung Dalam 1</a>
+        <form method="POST" action="/logout">
+            @csrf
+            <button type="submit" class="btn btn-light btn-sm">Keluar</button>
+        </form>
     </nav>
 
-    <main class="container py-5">
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <p class="admin-sidebar-title">MENU UTAMA</p>
+            <a href="/admin/dashboard#ringkasan">Dashboard</a>
+            <a href="/admin/dashboard#kuota">Pengaturan Kuota</a>
+            <a href="/admin/dashboard#jadwal">Jadwal Pendaftaran</a>
+            <a href="/admin/dashboard#daftar-ulang">Informasi Daftar Ulang</a>
+            <a href="/admin/pendaftar" class="active">Data Pendaftar</a>
+        </aside>
+
+    <main class="container py-5 admin-content">
         <div class="mb-4">
             <h1 class="page-title mb-2">Data Pendaftar</h1>
             <p class="text-secondary mb-0">
@@ -238,13 +270,14 @@
                     Total pendaftar: {{ $pendaftarans->count() }}
                 </small>
 
-                <button type="button" class="btn btn-outline-danger btn-sm"
+                <button type="button" class="btn btn-outline-primary btn-sm"
                         id="resetFilter">
                     Reset Filter
                 </button>
             </div>
         </section>
     </main>
+    </div>
 
     <script>
         const searchInput = document.getElementById('searchApplicant');

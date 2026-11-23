@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PendaftaranController;
@@ -60,6 +61,9 @@ Route::get('/login', [LoginController::class, 'showLogin'])
 
 Route::post('/login', [LoginController::class, 'login']);
 
+Route::get('/admin/login', [LoginController::class, 'showAdminLogin']);
+Route::post('/admin/login', [LoginController::class, 'adminLogin']);
+
 Route::post('/logout', function () {
 
     Auth::logout();
@@ -93,14 +97,12 @@ Route::get('/dashboard', function () {
         )->get();
     }
 
-    // Tiga dokumen wajib
     $jenisBerkasWajib = [
         'Kartu Keluarga',
         'Akta Kelahiran',
         'KTP Ibu',
     ];
 
-    // Memeriksa kelengkapan dokumen
     $sudahUploadBerkas = collect($jenisBerkasWajib)->every(
         function ($jenis) use ($berkas) {
             return $berkas->contains(
@@ -110,7 +112,6 @@ Route::get('/dashboard', function () {
         }
     );
 
-    // Memeriksa verifikasi dokumen
     $berkasSudahDiverifikasi =
         $sudahUploadBerkas &&
         $berkas->whereIn(
@@ -120,12 +121,10 @@ Route::get('/dashboard', function () {
             return $item->status === 'Diterima';
         });
 
-    // Memeriksa status pendaftaran
     $sudahTerverifikasi =
         $pendaftaran &&
         $pendaftaran->status === 'Terverifikasi';
 
-    // Memeriksa apakah hasil seleksi sudah diumumkan
     $hasilSeleksiDiumumkan =
         $pendaftaran &&
         in_array($pendaftaran->status, [
@@ -133,10 +132,8 @@ Route::get('/dashboard', function () {
             'Tidak Lulus',
         ]);
 
-    // Mengambil informasi daftar ulang dari admin
     $pengaturan = PengaturanPpdb::first();
 
-    // Daftar ulang hanya untuk siswa yang Lulus
     $tampilkanDaftarUlang =
         $pendaftaran &&
         $pendaftaran->status === 'Lulus' &&
@@ -260,12 +257,100 @@ Route::get('/admin/pendaftar/{id}', function ($id) {
 
 
 // ==========================
+// CATATAN PERBAIKAN ADMIN
+// ==========================
+
+Route::post('/admin/pendaftar/{id}/catatan', function (Request $request, $id) {
+
+    $request->validate([
+        'catatan_admin' => ['nullable', 'string', 'max:5000'],
+    ]);
+
+    $pendaftaran = Pendaftaran::findOrFail($id);
+
+    $pendaftaran->catatan_admin = $request->catatan_admin;
+    $pendaftaran->save();
+
+    return back()->with(
+        'success',
+        'Catatan perbaikan berhasil disimpan.'
+    );
+
+})->middleware('auth');
+
+
+Route::delete('/admin/pendaftar/{id}/catatan', function ($id) {
+
+    $pendaftaran = Pendaftaran::findOrFail($id);
+
+    $pendaftaran->update([
+        'catatan_admin' => null,
+    ]);
+
+    return back()->with(
+        'success',
+        'Catatan perbaikan berhasil dihapus.'
+    );
+
+})->middleware('auth');
+
+
+// ==========================
+// TERIMA SEMUA BERKAS SATU PENDAFTAR
+// ==========================
+
+Route::post('/admin/pendaftar/{id}/terima-semua-berkas', function ($id) {
+
+    $pendaftaran = Pendaftaran::findOrFail($id);
+
+    // Jangan mengubah berkas jika hasil seleksi sudah ditetapkan
+    if (in_array($pendaftaran->status, ['Lulus', 'Tidak Lulus'])) {
+        return back()->with(
+            'error',
+            'Hasil seleksi sudah ditetapkan. Berkas tidak dapat diubah.'
+        );
+    }
+
+    // Hanya menerima berkas yang masih menunggu verifikasi
+    $jumlahDiubah = Berkas::where(
+        'id_pendaftaran',
+        $pendaftaran->id
+    )->where(
+        'status',
+        'Menunggu Verifikasi'
+    )->update([
+        'status' => 'Diterima',
+    ]);
+
+    if ($jumlahDiubah === 0) {
+        return back()->with(
+            'error',
+            'Tidak ada berkas yang menunggu verifikasi.'
+        );
+    }
+
+    return back()->with(
+        'success',
+        $jumlahDiubah . ' berkas berhasil diterima.'
+    );
+
+})->middleware('auth');
+
+
+// ==========================
 // VERIFIKASI PENDAFTARAN
 // ==========================
 
 Route::post('/admin/pendaftar/{id}/verifikasi', function ($id) {
 
     $pendaftaran = Pendaftaran::findOrFail($id);
+
+    if (in_array($pendaftaran->status, ['Lulus', 'Tidak Lulus'])) {
+        return back()->with(
+            'error',
+            'Hasil seleksi sudah ditetapkan dan tidak dapat diverifikasi ulang.'
+        );
+    }
 
     $pendaftaran->update([
         'status' => 'Terverifikasi',
@@ -278,9 +363,58 @@ Route::post('/admin/pendaftar/{id}/verifikasi', function ($id) {
 
 })->middleware('auth');
 
+
+// ==========================
+// MENETAPKAN SISWA LULUS
+// ==========================
+
 Route::post('/admin/pendaftar/{id}/lulus', function ($id) {
 
     $pendaftaran = Pendaftaran::findOrFail($id);
+
+    if ($pendaftaran->status !== 'Terverifikasi') {
+        return back()->with(
+            'error',
+            'Pendaftaran belum diverifikasi. Periksa data siswa terlebih dahulu.'
+        );
+    }
+
+    if (trim((string) $pendaftaran->catatan_admin) !== '') {
+        return back()->with(
+            'error',
+            'Masih ada catatan perbaikan. Selesaikan perbaikan siswa terlebih dahulu.'
+        );
+    }
+
+    $jenisBerkasWajib = [
+        'Kartu Keluarga',
+        'Akta Kelahiran',
+        'KTP Ibu',
+    ];
+
+    $berkas = Berkas::where(
+        'id_pendaftaran',
+        $pendaftaran->id
+    )->whereIn(
+        'jenis_berkas',
+        $jenisBerkasWajib
+    )->get();
+
+    $semuaBerkasDiterima = collect($jenisBerkasWajib)->every(
+        function ($jenis) use ($berkas) {
+            return $berkas->contains(function ($item) use ($jenis) {
+                return $item->jenis_berkas === $jenis
+                    && $item->status === 'Diterima';
+            });
+        }
+    );
+
+    if (!$semuaBerkasDiterima) {
+        return back()->with(
+            'error',
+            'Belum semua berkas wajib diterima. Periksa berkas siswa terlebih dahulu.'
+        );
+    }
 
     $pendaftaran->update([
         'status' => 'Lulus',
@@ -293,9 +427,21 @@ Route::post('/admin/pendaftar/{id}/lulus', function ($id) {
 
 })->middleware('auth');
 
+
+// ==========================
+// MENETAPKAN SISWA TIDAK LULUS
+// ==========================
+
 Route::post('/admin/pendaftar/{id}/tidak-lulus', function ($id) {
 
     $pendaftaran = Pendaftaran::findOrFail($id);
+
+    if ($pendaftaran->status !== 'Terverifikasi') {
+        return back()->with(
+            'error',
+            'Pendaftaran harus diverifikasi terlebih dahulu sebelum hasil seleksi ditetapkan.'
+        );
+    }
 
     $pendaftaran->update([
         'status' => 'Tidak Lulus',
@@ -428,7 +574,13 @@ Route::get('/bukti-pendaftaran', function () {
         );
     }
 
-    // Tiga dokumen wajib
+    if ($pendaftaran->status !== 'Lulus') {
+        return redirect('/dashboard')->with(
+            'error',
+            'Bukti pendaftaran hanya tersedia setelah kamu dinyatakan Lulus oleh admin.'
+        );
+    }
+
     $jenisBerkasWajib = [
         'Kartu Keluarga',
         'Akta Kelahiran',
@@ -441,18 +593,21 @@ Route::get('/bukti-pendaftaran', function () {
     )->whereIn(
         'jenis_berkas',
         $jenisBerkasWajib
-    )->pluck('jenis_berkas');
+    )->get();
 
-    $semuaBerkasLengkap = collect($jenisBerkasWajib)->every(
+    $semuaBerkasDiterima = collect($jenisBerkasWajib)->every(
         function ($jenis) use ($berkas) {
-            return $berkas->contains($jenis);
+            return $berkas->contains(function ($item) use ($jenis) {
+                return $item->jenis_berkas === $jenis
+                    && $item->status === 'Diterima';
+            });
         }
     );
 
-    if (!$semuaBerkasLengkap) {
-        return redirect('/upload-berkas')->with(
+    if (!$semuaBerkasDiterima) {
+        return redirect('/dashboard')->with(
             'error',
-            'Lengkapi tiga berkas wajib terlebih dahulu untuk melihat bukti pendaftaran.'
+            'Bukti pendaftaran belum tersedia karena masih ada berkas wajib yang belum diterima admin.'
         );
     }
 

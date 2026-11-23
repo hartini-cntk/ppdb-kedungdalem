@@ -50,7 +50,7 @@
     @endphp
 
     <!-- Navbar -->
-    <nav class="navbar bg-danger">
+    <nav class="navbar bg-primary">
         <div class="container">
             <a href="/dashboard" class="navbar-brand text-white fw-bold">
                 SDN Kedung Dalem 1
@@ -225,7 +225,7 @@
                     @if (!$berkasTerkunci)
                         <button
                             type="submit"
-                            class="btn btn-danger w-100 py-2"
+                            class="btn btn-primary w-100 py-2"
                         >
                             Simpan Berkas
                         </button>
