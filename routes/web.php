@@ -230,6 +230,31 @@ Route::get('/admin/dashboard', function () {
 
 
 // ==========================
+Route::post('/admin/profile', function (Request $request) {
+    abort_unless($request->user()->role === 'admin', 403);
+
+    $validated = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $request->user()->id],
+        'current_password' => ['required_with:new_password', 'current_password'],
+        'new_password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+    ], [
+        'current_password.current_password' => 'Password saat ini tidak sesuai.',
+        'new_password.min' => 'Password baru minimal 8 karakter.',
+        'new_password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+    ]);
+
+    $user = $request->user();
+    $user->name = $validated['name'];
+    $user->email = $validated['email'];
+    if (!empty($validated['new_password'])) {
+        $user->password = $validated['new_password'];
+    }
+    $user->save();
+
+    return redirect('/admin/dashboard')->with('profile_success', 'Profil admin berhasil diperbarui.');
+})->middleware('auth');
 // DATA PENDAFTAR ADMIN
 // ==========================
 
@@ -617,3 +642,6 @@ Route::get('/bukti-pendaftaran', function () {
     );
 
 })->middleware('auth');
+
+
+

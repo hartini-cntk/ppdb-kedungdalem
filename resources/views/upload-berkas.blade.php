@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <style>`r`n        .navbar {`r`n            background: #103765 !important;`r`n            box-shadow: 0 2px 10px rgba(16, 55, 101, 0.16);`r`n        }`r`n    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -65,14 +66,13 @@
     <!-- Content -->
     <div class="container py-5">
 
-        <div class="mb-4">
-            <h1 class="fw-bold">Upload Berkas</h1>
-
-            <p class="text-secondary mb-0">
-                Silakan upload dokumen persyaratan untuk melanjutkan
-                proses pendaftaran PPDB.
-            </p>
-        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <p class="text-primary fw-semibold mb-2">PPDB SDN KEDUNG DALEM 1</p>
+                    <h1 class="fw-bold">Upload Berkas</h1>
+                    <p class="text-secondary mb-0">Silakan upload dokumen persyaratan untuk melanjutkan proses pendaftaran PPDB.</p>
+                </div>
 
         @if (session('success'))
             <div class="alert alert-success">
@@ -236,7 +236,14 @@
             </div>
         </div>
 
+            </div>
+        </div>
     </div>
 
 </body>
 </html>
+
+
+
+
+

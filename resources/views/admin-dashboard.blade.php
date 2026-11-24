@@ -37,14 +37,22 @@
 
         .logo { width: 44px; height: 44px; object-fit: contain; }
 
-        .logout {
-            background: white;
-            color: #1769c2;
-            border: 0;
-            border-radius: 7px;
-            padding: 10px 16px;
-            cursor: pointer;
-        }
+        .profile-menu { position: relative; }
+.profile-trigger { background: transparent; border: 0; padding: 4px; cursor: pointer; }
+.profile-trigger .profile-avatar { width: 42px; height: 42px; border: 2px solid rgba(255,255,255,.75); font-size: 16px; }
+.profile-trigger:hover .profile-avatar { background: white; }
+        .profile-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #e7effa; color: #103765; font-weight: 700; }
+        .profile-dropdown { display: none; position: absolute; z-index: 20; right: 0; top: calc(100% + 10px); width: 290px; padding: 12px; background: white; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 12px 30px rgba(16, 55, 101, .18); color: #252b36; }
+        .profile-menu.open .profile-dropdown { display: block; }
+        .profile-form { max-height: 60vh; overflow-y: auto; padding: 8px 2px 2px; }
+.profile-form label { display:block; color:#475467; font-size:13px; font-weight:600; margin:12px 0 5px; }
+.profile-form input { width:100%; padding:10px 11px; border:1px solid #d0d5dd; border-radius:7px; font:inherit; }
+.profile-form input:focus { outline:2px solid #b2d4ff; border-color:#1769c2; }
+.profile-summary { text-align: center; padding: 18px 12px; background: #f1f5fb; border-radius: 9px; }
+        .profile-summary .profile-avatar { width: 54px; height: 54px; margin: 0 auto 10px; font-size: 20px; }
+        .profile-email { color: #697386; font-size: 13px; overflow-wrap: anywhere; margin-top: 4px; }
+        .profile-logout { width: 100%; margin-top: 10px; padding: 10px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; color: #b42318; cursor: pointer; }
+
 
         .layout { display: flex; min-height: calc(100vh - 68px); }
 
@@ -282,10 +290,37 @@
             <span>SDN Kedung Dalam 1</span>
         </a>
 
-        <form method="POST" action="/logout">
-            @csrf
-            <button type="submit" class="logout">Keluar</button>
-        </form>
+        <div class="profile-menu" id="profileMenu">
+            <button type="button" class="profile-trigger" id="profileTrigger" aria-expanded="false">
+                <span class="profile-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}</span>
+            </button>
+            <div class="profile-dropdown">
+                <div class="profile-summary">
+                    <div class="profile-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}</div>
+                    <strong>{{ auth()->user()->name ?? 'Admin' }}</strong>
+                    <div class="profile-email">{{ auth()->user()->email ?? '' }}</div>
+                </div>
+                <button type="button" class="profile-logout" id="editProfileTrigger" style="color:#1769c2">Edit Profil</button>
+                <form method="POST" action="/admin/profile" id="editProfileForm" hidden class="profile-form">
+                    @csrf
+                    <label style="display:block;font-size:13px;margin:8px 0 4px">Nama admin</label>
+                    <input name="name" value="{{ old('name', auth()->user()->name) }}" required maxlength="255" style="width:100%;padding:9px;border:1px solid #d6dce5;border-radius:7px">
+                    <label style="display:block;font-size:13px;margin:8px 0 4px">Email</label>
+                    <input type="email" name="email" value="{{ old('email', auth()->user()->email) }}" required style="width:100%;padding:9px;border:1px solid #d6dce5;border-radius:7px">
+                    <label style="display:block;font-size:13px;margin:8px 0 4px">Password saat ini (untuk ganti password)</label>
+                    <input type="password" name="current_password" autocomplete="current-password" style="width:100%;padding:9px;border:1px solid #d6dce5;border-radius:7px">
+                    <label style="display:block;font-size:13px;margin:8px 0 4px">Password baru (opsional)</label>
+                    <input type="password" name="new_password" autocomplete="new-password" style="width:100%;padding:9px;border:1px solid #d6dce5;border-radius:7px">
+                    <label style="display:block;font-size:13px;margin:8px 0 4px">Ulangi password baru</label>
+                    <input type="password" name="new_password_confirmation" autocomplete="new-password" style="width:100%;padding:9px;border:1px solid #d6dce5;border-radius:7px">
+                    <button type="submit" class="profile-logout" style="background:#1769c2;color:white">Simpan Profil</button>
+                </form>
+                <form method="POST" action="/logout">
+                    @csrf
+                    <button type="submit" class="profile-logout">Keluar</button>
+                </form>
+            </div>
+        </div>
     </nav>
 
     <div class="layout">
@@ -571,6 +606,22 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const profileMenu = document.getElementById('profileMenu');
+            const profileTrigger = document.getElementById('profileTrigger');
+            const editProfileTrigger = document.getElementById('editProfileTrigger');
+            const editProfileForm = document.getElementById('editProfileForm');
+            editProfileTrigger?.addEventListener('click', () => { editProfileForm.hidden = !editProfileForm.hidden; });
+            profileTrigger?.addEventListener('click', () => {
+                const isOpen = profileMenu.classList.toggle('open');
+                profileTrigger.setAttribute('aria-expanded', String(isOpen));
+            });
+            document.addEventListener('click', event => {
+                if (profileMenu && !profileMenu.contains(event.target)) {
+                    profileMenu.classList.remove('open');
+                    profileTrigger?.setAttribute('aria-expanded', 'false');
+                }
+            });
+
             const menus = document.querySelectorAll('.admin-menu');
             const panels = document.querySelectorAll('[data-menu-panel]');
             const summaryStats = document.querySelector('[data-summary-stats]');
@@ -591,3 +642,13 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
